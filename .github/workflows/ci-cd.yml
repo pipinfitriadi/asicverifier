@@ -1,17 +1,25 @@
 # This file is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
-name: Docker
+name: CI/CD
 on:
   push:
     branches:
       - main
+      - develop
 jobs:
-  build:
-    name: Build and Push Docker Image
+  pypi:
+    name: PyPI
     runs-on: ubuntu-latest
     environment:
-      name: production
+      name: python
+      url: https://pypi.org/project/${{ github.event.repository.name }}/
+  docker:
+    name: Docker
+    needs: pypi
+    runs-on: ubuntu-latest
+    environment:
+      name: docker
       url: https://hub.docker.com/r/${{ github.repository }}
     steps:
       - name: Checkout
@@ -22,7 +30,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -36,5 +44,5 @@ jobs:
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.TOKEN }}
           short-description: ${{ github.event.repository.description }}
