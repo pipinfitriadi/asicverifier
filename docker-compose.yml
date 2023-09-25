@@ -9,6 +9,8 @@ services:
       platforms:
         - linux/amd64
       cache_from:
-        - pipinfitriadi/asicverifier
+        - type=registry,ref=pipinfitriadi/asicverifier
+      cache_to:
+        - type=inline
     image: pipinfitriadi/asicverifier
     platform: linux/amd64

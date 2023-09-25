@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - develop
 jobs:
   pypi:
     name: PyPI
@@ -38,10 +37,10 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
-          push: true
-          tags: ${{ github.repository }}
           cache-from: type=registry,ref=${{ github.repository }}
           cache-to: type=inline
+          tags: ${{ github.repository }}
+          push: true
       - name: Update repo description
         uses: peter-evans/dockerhub-description@v3
         with:
