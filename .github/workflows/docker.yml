@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - main
-      - develop
-      - feature/docker
 jobs:
   build:
     name: Build and Push Docker Image
