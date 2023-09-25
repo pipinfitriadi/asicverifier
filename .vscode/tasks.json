@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Docker: build",
+            "type": "shell",
+            "command": "docker compose pull && docker compose build && docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
+        },
+        {
+            "label": "Docker: push",
+            "dependsOn": "Docker: build",
+            "type": "shell",
+            "command": "docker compose push"
+        },
+        {
+            "label": "Docker: run",
+            "type": "shell",
+            "command": "docker compose up && docker compose rm -fsv"
+        }
+    ]
+}
