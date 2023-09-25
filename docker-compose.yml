@@ -1,0 +1,14 @@
+# This file is part of DataSae and is released under
+# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+
+version: '3.7'
+services:
+  asicverifier:
+    build:
+      context: .
+      platforms:
+        - linux/amd64
+      cache_from:
+        - pipinfitriadi/asicverifier
+    image: pipinfitriadi/asicverifier
+    platform: linux/amd64
