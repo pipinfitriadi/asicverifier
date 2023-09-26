@@ -11,6 +11,25 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+'
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 jobs:
+  venv:
+    name: Virtual environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Install dependencies
+        run: |
+          python -m venv venv/
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install build "coverage[toml]"
   lint:
     name: Linter Test
     runs-on: ubuntu-latest
@@ -24,45 +43,25 @@ jobs:
         run: flake8
   unittest:
     name: Unit Test
+    needs: venv
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.7'
       - name: Cache venv
-        id: cache-python-venv
-        uses: actions/cache/restore@v3
+        uses: actions/cache@v3
         with:
           path: venv/
           key: python-venv
-      - name: Create venv
-        if: steps.cache-python-venv.outputs.cache-hit != 'true'
-        run: python -m venv venv/
       - name: Activate venv
         run: |
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
-      - name: Install dependencies for venv
-        if: steps.cache-python-venv.outputs.cache-hit != 'true'
-        run: |
-          pip install --upgrade pip
-          pip install build "coverage[toml]"
-      - name: Save cache
-        if: steps.cache-python-venv.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
-        with:
-          path: venv/
-          key: python-venv
       - name: Install package
         run: pip install .
       - name: Test
-        run: |
-          . venv/bin/activate
-          python -m coverage run -m unittest
+        run: python -m coverage run -m unittest
       - name: Display test coverage
         run: python -m coverage report -m
       - name: Test coverage must be 100% passed!
@@ -86,10 +85,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.7'
       - name: Cache venv
         uses: actions/cache@v3
         with:
