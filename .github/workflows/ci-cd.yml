@@ -39,7 +39,8 @@ jobs:
     container:
       image: pipelinecomponents/flake8
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Lint with flake8
@@ -49,6 +50,10 @@ jobs:
     needs: venv
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Cache venv
         uses: actions/cache@v3
         with:
@@ -58,9 +63,6 @@ jobs:
         run: |
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Install package
         run: pip install .
       - name: Test
@@ -84,15 +86,15 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Cache venv
         uses: actions/cache@v3
         with:
           path: venv/
           key: python-venv
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Build package
         run: |
           . venv/bin/activate
