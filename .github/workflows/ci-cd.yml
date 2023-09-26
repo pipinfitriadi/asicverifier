@@ -15,16 +15,19 @@ jobs:
     name: Virtual environment
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.7'
       - name: Cache venv
+        id: cache-python-venv
         uses: actions/cache@v3
         with:
           path: venv/
           key: python-venv
+      - name: Set up Python
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
       - name: Install dependencies
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
         run: |
           python -m venv venv/
           . venv/bin/activate
@@ -46,9 +49,6 @@ jobs:
     needs: venv
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Cache venv
         uses: actions/cache@v3
         with:
@@ -58,6 +58,9 @@ jobs:
         run: |
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install package
         run: pip install .
       - name: Test
@@ -66,8 +69,8 @@ jobs:
         run: python -m coverage report -m
       - name: Test coverage must be 100% passed!
         if:
-          github.event_name == 'pull_request' ||
           github.ref_type == 'tag' ||
+          github.event_name == 'pull_request' ||
           contains('refs/heads/main refs/heads/develop', github.ref)
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   pypi:
@@ -81,15 +84,15 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Cache venv
         uses: actions/cache@v3
         with:
           path: venv/
           key: python-venv
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Build package
         run: |
           . venv/bin/activate
