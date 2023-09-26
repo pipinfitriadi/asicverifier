@@ -3,14 +3,26 @@
 
 version: '3.7'
 services:
+  cache:
+    build:
+      context: .
+      target: cache
+      platforms:
+        - linux/amd64
+      no_cache: true
+    image: pipinfitriadi/asicverifier:cache
   asicverifier:
     build:
       context: .
       platforms:
         - linux/amd64
       cache_from:
+        - pipinfitriadi/asicverifier:cache
         - type=registry,ref=pipinfitriadi/asicverifier
       cache_to:
         - type=inline
     image: pipinfitriadi/asicverifier
     platform: linux/amd64
+    # stdin_open: true
+    # tty: true
+    # entrypoint: sh
