@@ -1,0 +1,31 @@
+Loading configuration from /verificationconf/...
+Verifying ASiC container "/file.asice" ...
+Verification successful.
+Signer
+    Certificate:
+        Subject: CN=tahura, O=COMMERCE, C=XROAD-DISKOMINFO-JABAR
+        Issuer: CN=Diskominfo Jabar Test CA, O=X-Road Diskominfo Jabar Test CA
+        Serial number: 13
+        Valid from: Mon May 29 08:33:50 GMT 2023
+        Valid until: Sun May 24 08:33:50 GMT 2043
+    ID: SUBSYSTEM:XROAD-DISKOMINFO-JABAR/COMMERCE/tahura/ticketing
+OCSP response
+    Signed by:
+        Subject: CN=Diskominfo Jabar Test OCSP, O=X-Road Diskominfo Jabar Test CA
+        Issuer: CN=Diskominfo Jabar Test CA, O=X-Road Diskominfo Jabar Test CA
+        Serial number: 1
+        Valid from: Mon May 22 21:08:07 GMT 2023
+        Valid until: Sun May 17 21:08:07 GMT 2043
+    Produced at: Tue Aug 29 07:43:27 GMT 2023
+Timestamp
+    Signed by:
+        Subject: ST=Bayern, C=DE, L=Wuerzburg, EMAILADDRESS=busilezas@gmail.com, CN=www.freetsa.org, OID.2.5.4.13=This certificate digitally signs documents and time stamp requests made using the freetsa.org online services, OU=TSA, O=Free TSA
+        Issuer: C=DE, ST=Bayern, L=Wuerzburg, EMAILADDRESS=busilezas@gmail.com, CN=www.freetsa.org, OU=Root CA, O=Free TSA
+        Serial number: 13972846748170250626
+        Valid from: Sun Mar 13 01:57:39 GMT 2016
+        Valid until: Wed Mar 11 01:57:39 GMT 2026
+    Date: Tue Aug 29 07:53:06 GMT 2023
+The digest for "/attachment1" is: cff78e6e6022a16026af97204edaab5b4b41e3107dc2429f8335c341ba2471cca06c2d809d9aa6a3778f6fb3af982afb3d352e205c91ac8f68fc45d334f32ffb (verified)
+
+
+Would you like to extract the signed files? (y/n)

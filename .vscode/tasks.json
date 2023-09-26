@@ -58,16 +58,19 @@
         {
             "label": "Python: Package test unit",
             "type": "shell",
-            "command": "echo Unit Test"
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "coverage", "run", "-m", "unittest"]
         },
         {
             "label": "Python: Package test",
+            "dependsOrder": "sequence",
             "dependsOn": [
                 "Python: Package test linter",
                 "Python: Package test unit",
             ],
             "type": "shell",
-            "command": "echo Finished test for python"
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "coverage", "report", "-m"]
         },
         {
             "label": "Python: Package build",
