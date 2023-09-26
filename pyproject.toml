@@ -27,8 +27,8 @@ classifiers = [
     'Topic :: Utilities'
 ]
 dependencies = []
-dynamic = ['version']
 scripts = { asicverifier = 'asicverifier.__main__:run' }
+dynamic = ['version']
 
 [project.urls]
 Repository = 'https://github.com/pipinfitriadi/asicverifier'
