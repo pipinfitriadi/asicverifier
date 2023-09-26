@@ -4,7 +4,9 @@
 *.egg-info/
 __pycache__/
 build/
+dist/
 venv/
 
+.pypirc
 # Get this jar file from X-Road Security Server path /usr/share/xroad/jlib/asicverifier.jar
 asicverifier.jar
