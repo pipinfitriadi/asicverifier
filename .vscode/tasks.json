@@ -2,6 +2,47 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Python: Venv",
+            "type": "shell",
+            "command": "if [ ! -d venv/ ]; then python -m venv venv/; fi"
+        },
+        {
+            "label": "Python: Pip upgrade",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "--upgrade", "pip"]
+        },
+        {
+            "label": "Python: Install dependency",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "flake8"]
+        },
+        {
+            "label": "Python: Initial setup",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Python: Venv",
+                "Python: Pip upgrade",
+                "Python: Install dependency"
+            ],
+            "type": "shell",
+            "command": "echo Finished initial setup for python"
+        },
+        {
+            "label": "Python: Install this package",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "."]
+        },
+        {
+            "label": "Python: Show this package",
+            "dependsOn": "Python: Install this package",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "show", "--verbose", "asicverifier"]
+        },
+        {
             "label": "Docker: build",
             "type": "shell",
             "command": "docker compose pull && docker compose build && docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
