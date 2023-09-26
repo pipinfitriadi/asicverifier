@@ -87,7 +87,7 @@ jobs:
           context: .
           platforms: linux/amd64
           cache-from: |
-            localhost:5000/{{ github.repository }}:cache
+            localhost:5000/${{ github.repository }}:cache
             type=registry,ref=${{ github.repository }}
           cache-to: type=inline
           tags: ${{ github.repository }}
