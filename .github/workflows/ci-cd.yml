@@ -76,7 +76,7 @@ jobs:
           platforms: linux/amd64
           no-cache: true
           tags: ${{ github.repository }}:cache
-          outputs: type=local,ref=${{ github.repository }}:cache
+          load: true
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
