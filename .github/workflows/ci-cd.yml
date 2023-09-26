@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - feature/python-script
 jobs:
   pypi:
     name: PyPI
@@ -13,8 +14,13 @@ jobs:
     environment:
       name: python
       url: https://pypi.org/project/${{ github.event.repository.name }}/
+    permissions:
+      id-token: write
     steps:
-      - run: echo ${{ github.event.repository.name }}
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
   docker:
     name: Docker
     needs: pypi
