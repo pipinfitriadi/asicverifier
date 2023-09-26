@@ -3,6 +3,7 @@
 
 name: CI/CD
 on:
+  pull_request:
   push:
     branches: ['**']
     tags:
@@ -60,10 +61,16 @@ jobs:
         run: pip install .
       - name: Test
         run: python -m coverage run -m unittest
-      - name: Display coverage
+      - name: Display test coverage
         run: python -m coverage report -m
+      - name: Test coverage must be 100% passed!
+        if:
+          github.event_name == 'pull_request' ||
+          contains('refs/heads/main refs/heads/develop', github.ref) ||
+        run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   pypi:
     name: PyPI
+    needs: [lint, unittest]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     environment:
