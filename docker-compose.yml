@@ -19,6 +19,8 @@ services:
       cache_from:
         - pipinfitriadi/asicverifier:cache
         - type=registry,ref=pipinfitriadi/asicverifier
+        - type=registry,ref=niis/xroad-security-server-sidecar:7.0.4
+        - type=registry,ref=eclipse-temurin:8-alpine
       cache_to:
         - type=inline
     image: pipinfitriadi/asicverifier

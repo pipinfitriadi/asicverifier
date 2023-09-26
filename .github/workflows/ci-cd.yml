@@ -85,7 +85,10 @@ jobs:
           context: .
           build-contexts: cache=docker-image://${{ github.repository }}:cache
           platforms: linux/amd64
-          cache-from: type=registry,ref=${{ github.repository }}
+          cache-from: |
+            type=registry,ref=${{ github.repository }}
+            type=registry,ref=niis/xroad-security-server-sidecar:7.0.4
+            type=registry,ref=eclipse-temurin:8-alpine
           cache-to: type=inline
           tags: ${{ github.repository }}
           push: true
