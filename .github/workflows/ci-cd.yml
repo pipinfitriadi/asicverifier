@@ -53,6 +53,11 @@ jobs:
     name: Docker
     # needs: pypi
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     environment:
       name: docker
       url: https://hub.docker.com/r/${{ github.repository }}
@@ -75,16 +80,14 @@ jobs:
           target: cache
           platforms: linux/amd64
           no-cache: true
-          tags: ${{ github.repository }}:cache
-          load: true
-      - run: docker images
+          tags: localhost:5000/${{ github.repository }}:cache
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64
           cache-from: |
-            ${{ github.repository }}:cache
+            localhost:5000/{{ github.repository }}:cache
             type=registry,ref=${{ github.repository }}
           cache-to: type=inline
           tags: ${{ github.repository }}
