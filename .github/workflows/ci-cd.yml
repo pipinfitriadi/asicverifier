@@ -4,9 +4,7 @@
 name: CI/CD
 on:
   push:
-    branches:
-      - main
-      - feature/python-script
+    branches: ['**']
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+'
@@ -70,12 +68,22 @@ jobs:
         with:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.TOKEN }}
+      - name: Build cache
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: cache
+          platforms: linux/amd64
+          no-cache: true
+          tags: ${{ github.repository }}:cache
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64
-          cache-from: type=registry,ref=${{ github.repository }}
+          cache-from: |
+            ${{ github.repository }}:cache
+            type=registry,ref=${{ github.repository }}
           cache-to: type=inline
           tags: ${{ github.repository }}
           push: true
