@@ -23,6 +23,6 @@ services:
         - type=inline
     image: pipinfitriadi/asicverifier
     platform: linux/amd64
-    # stdin_open: true
-    # tty: true
-    # entrypoint: sh
+    stdin_open: true
+    tty: true
+    entrypoint: sh

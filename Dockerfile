@@ -3,7 +3,16 @@
 
 FROM python:3.7-alpine AS cache
 LABEL maintainer="pipinfitriadi@gmail.com"
-RUN pip install --target=/opt/venv/ --no-cache-dir AsicVerifier
+RUN pip install \
+        --upgrade \
+        --root-user-action=ignore \
+        pip && \
+    pip install \
+        --no-cache-dir \
+        --upgrade \
+        --root-user-action=ignore \
+        --target=/opt/venv/ \
+        AsicVerifier
 
 FROM python:3.7-alpine
 LABEL maintainer='pipinfitriadi@gmail.com'
