@@ -51,7 +51,7 @@ jobs:
           skip-existing: true
   docker:
     name: Docker
-    needs: pypi
+    # needs: pypi
     runs-on: ubuntu-latest
     environment:
       name: docker
@@ -76,7 +76,8 @@ jobs:
           platforms: linux/amd64
           no-cache: true
           tags: ${{ github.repository }}:cache
-      - name: Build and push
+          outputs: type=local,ref=${{ github.repository }}:cache
+      - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
