@@ -13,6 +13,10 @@ on:
 jobs:
   venv:
     name: Virtual environment
+    if:
+      github.ref_type == 'tag' ||
+      github.event_name == 'pull_request' ||
+      contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     steps:
       - name: Cache venv
