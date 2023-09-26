@@ -53,11 +53,6 @@ jobs:
     name: Docker
     # needs: pypi
     runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
     environment:
       name: docker
       url: https://hub.docker.com/r/${{ github.repository }}
@@ -69,7 +64,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          driver-opts: network=host
+          driver: docker
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -82,15 +77,15 @@ jobs:
           target: cache
           platforms: linux/amd64
           no-cache: true
-          tags: localhost:5000/${{ github.repository }}:cache
+          tags: ${{ github.repository }}:cache
+          load: true
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
+          build-contexts: cache=docker-image://${{ github.repository }}:cache
           platforms: linux/amd64
-          cache-from: |
-            localhost:5000/${{ github.repository }}:cache
-            type=registry,ref=${{ github.repository }}
+          cache-from: type=registry,ref=${{ github.repository }}
           cache-to: type=inline
           tags: ${{ github.repository }}
           push: true
