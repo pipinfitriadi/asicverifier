@@ -3,22 +3,23 @@
 
 version: '3.7'
 services:
-  cache:
+  venv:
     build:
       context: .
-      target: cache
+      target: venv
       platforms:
         - linux/amd64
       no_cache: true
-    image: pipinfitriadi/asicverifier:cache
+    image: pipinfitriadi/asicverifier:venv
   asicverifier:
     build:
       context: .
       platforms:
         - linux/amd64
       cache_from:
-        - pipinfitriadi/asicverifier:cache
+        - pipinfitriadi/asicverifier:venv
         - type=registry,ref=pipinfitriadi/asicverifier
+        - type=registry,ref=python:3.7-alpine
         - type=registry,ref=niis/xroad-security-server-sidecar:7.0.4
         - type=registry,ref=eclipse-temurin:8-alpine
       cache_to:
