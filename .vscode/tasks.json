@@ -2,15 +2,103 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Python: Venv",
+            "type": "shell",
+            "command": "if [ ! -d venv/ ]; then python -m venv venv/; fi"
+        },
+        {
+            "label": "Python: Pip upgrade",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "--upgrade", "pip"]
+        },
+        {
+            "label": "Python: Install dependency",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m", "pip", "install",
+                "build",
+                "'coverage[toml]'",
+                "'importlib_metadata<5'",
+                "flake8",
+                "twine"
+            ]
+        },
+        {
+            "label": "Python: Initial setup",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Python: Venv",
+                "Python: Pip upgrade",
+                "Python: Install dependency"
+            ],
+            "type": "shell",
+            "command": "echo Finished initial setup for python"
+        },
+        {
+            "label": "Python: Package install",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "."]
+        },
+        {
+            "label": "Python: Package show",
+            "dependsOn": "Python: Package install",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "show", "--verbose", "asicverifier"]
+        },
+        {
+            "label": "Python: Package test linter",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "flake8", "--exclude", "venv/"]
+        },
+        {
+            "label": "Python: Package test unit",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "coverage", "run", "-m", "unittest"]
+        },
+        {
+            "label": "Python: Package test",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Python: Package test linter",
+                "Python: Package test unit",
+            ],
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "coverage", "report", "-m"]
+        },
+        {
+            "label": "Python: Package build",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "build"]
+        },
+        {
+            "label": "Python: Release PyPI",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Python: Package test",
+                "Python: Package build"
+            ],
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "twine", "upload", "--config-file", ".pypirc", "--skip-existing", "dist/*"]
+        },
+        {
             "label": "Docker: build",
             "type": "shell",
-            "command": "docker compose pull && docker compose build && docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
+            "command": "docker compose pull asicverifier && docker compose build && docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
         },
         {
             "label": "Docker: push",
             "dependsOn": "Docker: build",
             "type": "shell",
-            "command": "docker compose push"
+            "command": "docker compose push asicverifier"
         },
         {
             "label": "Docker: run",

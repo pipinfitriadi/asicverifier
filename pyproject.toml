@@ -1,0 +1,44 @@
+# This file is part of AsicVerifier and is released under
+# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+
+[build-system]
+requires = ['setuptools>=61.0', 'setuptools-git-versioning<2']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'AsicVerifier'
+description = 'Asic Verifier for X-Road'
+readme = 'README.md'
+requires-python = '>=3.7'
+license = {text = 'AGPL-3.0-only'}
+keywords = ['X-Road', 'security server']
+authors = [{name = 'Pipin Fitriadi'}, {email = 'pipinfitriadi@gmail.com'}]
+maintainers = [{name = 'Pipin Fitriadi'}, {email = 'pipinfitriadi@gmail.com'}]
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Programming Language :: Java',
+    'Programming Language :: Python :: 3.7',
+    'License :: OSI Approved :: GNU Affero General Public License v3',
+    'Operating System :: OS Independent',
+    'Framework :: FastAPI',
+    'Topic :: File Formats :: JSON',
+    'Topic :: Internet :: WWW/HTTP :: HTTP Servers',
+    'Topic :: Text Processing',
+    'Topic :: Utilities'
+]
+dependencies = []
+scripts = { asicverifier = 'asicverifier.__main__:run' }
+dynamic = ['version']
+
+[project.urls]
+Repository = 'https://github.com/pipinfitriadi/asicverifier'
+Docker = 'https://hub.docker.com/r/pipinfitriadi/asicverifier'
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.setuptools-git-versioning]
+enabled = true
+template = '{tag}'
+dev_template = '{tag}'
+dirty_template = '{tag}'
