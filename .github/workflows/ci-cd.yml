@@ -113,7 +113,7 @@ jobs:
           skip-existing: true
   docker:
     name: Docker
-    # needs: pypi
+    needs: pypi
     runs-on: ubuntu-latest
     environment:
       name: docker
