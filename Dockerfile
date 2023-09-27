@@ -17,7 +17,7 @@ RUN pip install \
 FROM python:3.7-alpine
 LABEL maintainer='pipinfitriadi@gmail.com'
 COPY --from=niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar /lib/
-ENV JAVA_HOME=/opt/java/openjdk
+ENV JAVA_HOME /opt/java/openjdk
 COPY --from=eclipse-temurin:8-alpine $JAVA_HOME $JAVA_HOME
 ENV PATH $JAVA_HOME/bin:$PATH
 COPY --from=venv /opt/venv/ /opt/venv/
