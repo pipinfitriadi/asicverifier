@@ -118,8 +118,11 @@ jobs:
     environment:
       name: docker
       url: https://hub.docker.com/r/${{ github.repository }}
-    env:
-      PLATFORMS: linux/amd64,linux/arm64
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -136,7 +139,7 @@ jobs:
         with:
           context: .
           target: venv
-          platforms: ${{ env.PLATFORMS }}
+          platforms: ${{ matrix.platform }}
           no-cache: true
           tags: ${{ github.repository }}:venv
           load: true
@@ -150,7 +153,7 @@ jobs:
         with:
           context: .
           build-contexts: venv=docker-image://${{ github.repository }}:venv
-          platforms: ${{ env.PLATFORMS }}
+          platforms: ${{ matrix.platform }}
           cache-from: |
             type=registry,ref=${{ github.repository }}
             type=registry,ref=niis/xroad-security-server-sidecar:7.0.4
