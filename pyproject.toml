@@ -26,7 +26,7 @@ classifiers = [
     'Topic :: Text Processing',
     'Topic :: Utilities'
 ]
-dependencies = []
+dependencies = ['fastapi']
 scripts = { asicverifier = 'asicverifier.__main__:run' }
 dynamic = ['version']
 
