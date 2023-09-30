@@ -3,8 +3,6 @@
 # This module is part of AsicVerifier and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
-from urllib.parse import urljoin
-
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
