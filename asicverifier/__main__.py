@@ -9,7 +9,8 @@ from os import getenv
 from dotenv import load_dotenv
 from typer import Typer
 
-from . import META_DATA
+from . import SUMMARY
+from .restful_api import restful_api
 
 load_dotenv()
 logging.basicConfig(
@@ -18,7 +19,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 cli: Typer = Typer(
-    help=META_DATA['Summary'],
+    help=SUMMARY,
     add_completion=False,
     pretty_exceptions_show_locals={
         'true': True, 'false': False
@@ -26,7 +27,7 @@ cli: Typer = Typer(
 )
 
 for command in [
-    lambda: None
+    restful_api
 ]:
     cli.command()(command)
 

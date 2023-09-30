@@ -30,6 +30,9 @@ dependencies = ['python-dotenv', 'typer[all]']
 scripts = { asicverifier = 'asicverifier.__main__:cli' }
 dynamic = ['version']
 
+[project.optional-dependencies]
+restful-api = ['fastapi', 'uvicorn[standard]']
+
 [project.urls]
 Repository = 'https://github.com/pipinfitriadi/asicverifier'
 Docker = 'https://hub.docker.com/r/pipinfitriadi/asicverifier'

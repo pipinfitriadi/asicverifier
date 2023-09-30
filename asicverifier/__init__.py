@@ -9,6 +9,7 @@ import re
 from importlib_metadata import PackageMetadata, metadata
 
 META_DATA: PackageMetadata = metadata(__name__)
+SUMMARY: str = META_DATA['Summary']
 
 
 def to_datetime(string: str) -> datetime:
