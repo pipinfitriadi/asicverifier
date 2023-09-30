@@ -6,6 +6,10 @@
 from datetime import datetime
 import re
 
+from importlib_metadata import PackageMetadata, metadata
+
+META_DATA: PackageMetadata = metadata(__name__)
+
 
 def to_datetime(string: str) -> datetime:
     return datetime.strptime(string, r'%a %b %d %H:%M:%S %Z %Y')
