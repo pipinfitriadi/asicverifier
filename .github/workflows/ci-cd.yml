@@ -141,6 +141,7 @@ jobs:
           cache-to: type=inline
           tags: ${{ github.repository }}
           push: true
+          load: true
       - name: Update repo description
         uses: peter-evans/dockerhub-description@v3
         with:
