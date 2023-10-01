@@ -3,13 +3,97 @@
 # This module is part of AsicVerifier and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+from datetime import datetime
 from os import getenv
+from typing import List, Union
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import (
+    BaseModel,
+    DirectoryPath,
+    EmailStr,
+    Field,
+    FilePath,
+    NonNegativeInt
+)
 import uvicorn
 
-from . import META_DATA, SUMMARY
+from . import asicverifier, META_DATA, SUMMARY
+
+
+class AsicSignerId(BaseModel):
+    subsystem: DirectoryPath
+
+
+class AsicSignValid(BaseModel):
+    from_: datetime = Field(alias='from')
+    until: datetime
+
+
+class AsicOcsp(BaseModel):
+    CN: str
+    O: str
+
+
+class AsicSign(BaseModel):
+    subject: AsicOcsp
+    issuer: AsicOcsp
+    serial_number: NonNegativeInt
+    valid: AsicSignValid
+
+
+class AsicSignerCertificateSubject(AsicOcsp):
+    C: str
+
+
+class AsicSignerCertificate(AsicSign):
+    subject: AsicSignerCertificateSubject
+
+
+class AsicSigner(BaseModel):
+    certificate: AsicSignerCertificate
+    id: AsicSignerId
+
+
+class AsicOcspResponse(BaseModel):
+    signed_by: AsicSign
+    produced_at: datetime
+
+
+class AsicTimeStampSignByIssuer(AsicSignerCertificateSubject, BaseModel):
+    ST: str
+    L: str
+    EMAILADDRESS: EmailStr
+    OU: str
+
+
+class AsicTimeStampSignBySubject(AsicTimeStampSignByIssuer):
+    oid_2_5_4_13: str = Field(alias='OID.2.5.4.13')
+
+
+class AsicTimeStampSignBy(AsicSign):
+    subject: AsicTimeStampSignBySubject
+    issuer: AsicTimeStampSignByIssuer
+
+
+class AsicTimeStamp(BaseModel):
+    signed_by: AsicTimeStampSignBy
+    date: datetime
+
+
+class AsicFile(BaseModel):
+    path: FilePath
+    digist: str
+    status: str
+
+
+class Asic(BaseModel):
+    verification: str
+    signer: AsicSigner
+    ocsp_response: AsicOcspResponse
+    timestamp: AsicTimeStamp
+    file: List[AsicFile]
 
 
 class RestfulApi:
@@ -39,6 +123,10 @@ class RestfulApi:
             allow_headers=['*']
         )
         router = APIRouter()
+        router.get(
+            '/', name='verifier', response_model=Union[Asic, dict]
+        )(asicverifier)
+
         api.include_router(router, prefix=RESTFUL_API_PATH)
         return api
 

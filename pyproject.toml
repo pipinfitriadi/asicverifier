@@ -31,7 +31,7 @@ scripts = { asicverifier = 'asicverifier.__main__:cli' }
 dynamic = ['version']
 
 [project.optional-dependencies]
-restful-api = ['fastapi', 'uvicorn[standard]']
+restful-api = ['pydantic[email]', 'fastapi', 'uvicorn[standard]']
 
 [project.urls]
 Repository = 'https://github.com/pipinfitriadi/asicverifier'
