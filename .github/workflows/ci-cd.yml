@@ -141,7 +141,7 @@ jobs:
           cache-to: type=inline
           tags: ${{ github.repository }}
           push: true
-          load: true
+          outputs: type=docker,dest=/tmp/${{ github.event.repository.name }}.tar
       - name: Update repo description
         uses: peter-evans/dockerhub-description@v3
         with:
@@ -149,4 +149,6 @@ jobs:
           password: ${{ secrets.TOKEN }}
           short-description: ${{ github.event.repository.description }}
       - name: Show package info
-        run: docker run --platform linux/amd64 --rm --entrypoint pip ${{ github.repository }} show ${{ github.event.repository.name }} --verbose
+        run: |
+          docker load --input /tmp/${{ github.event.repository.name }}.tar
+          docker run --platform linux/amd64 --rm --entrypoint pip ${{ github.repository }} show ${{ github.event.repository.name }} --verbose
