@@ -15,6 +15,7 @@ services:
       cache_to:
         - type=inline
     image: pipinfitriadi/asicverifier
+    container_name: asicverifier
     platform: linux/amd64
     ports:
       - 80:80
