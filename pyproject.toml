@@ -26,9 +26,12 @@ classifiers = [
     'Topic :: Text Processing',
     'Topic :: Utilities'
 ]
-dependencies = []
-scripts = { asicverifier = 'asicverifier.__main__:run' }
+dependencies = ['python-dotenv', 'typer[all]']
+scripts = { asicverifier = 'asicverifier.__main__:cli' }
 dynamic = ['version']
+
+[project.optional-dependencies]
+restful-api = ['pydantic[email]', 'fastapi', 'uvicorn[standard]']
 
 [project.urls]
 Repository = 'https://github.com/pipinfitriadi/asicverifier'
