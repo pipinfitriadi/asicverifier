@@ -3,6 +3,7 @@
 
 FROM python:3.7-alpine AS venv
 LABEL maintainer="pipinfitriadi@gmail.com"
+ADD https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h skipcache
 RUN pip install \
         --upgrade \
         --root-user-action=ignore \
