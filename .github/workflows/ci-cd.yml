@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ github.ref }} | egrep refs/heads/hotfix/0.1.5
-      - run: echo ${{ github.ref }} | egrep '^refs/heads/hotfix/\d+.\d+.\d+$'
+      - run: echo ${{ github.ref }} | egrep 'refs/heads/hotfix/\d+.\d+.\d+'
       - name: Cache venv
         id: cache-python-venv
         uses: actions/cache@v3
