@@ -45,6 +45,7 @@ jobs:
     container:
       image: pipelinecomponents/flake8
     steps:
+      - run: echo ${{ github.ref }}
       - name: Checkout
         uses: actions/checkout@v4
         with:
