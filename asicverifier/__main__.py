@@ -6,13 +6,11 @@
 import logging
 from os import getenv
 
-from dotenv import load_dotenv
 from typer import Typer
 
 from . import SUMMARY
-from .restful_api import restful_api
+from .restful_api import RestfulApi
 
-load_dotenv()
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
@@ -27,7 +25,7 @@ cli: Typer = Typer(
 )
 
 for command in [
-    restful_api
+    RestfulApi.run
 ]:
     cli.command()(command)
 

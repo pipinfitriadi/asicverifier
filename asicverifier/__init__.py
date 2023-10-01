@@ -6,8 +6,10 @@
 from datetime import datetime
 import re
 
+from dotenv import load_dotenv
 from importlib_metadata import PackageMetadata, metadata
 
+load_dotenv()
 META_DATA: PackageMetadata = metadata(__name__)
 SUMMARY: str = META_DATA['Summary']
 
