@@ -10,8 +10,7 @@ the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/asicverifier?logo=python&label=Python&labelColor=black)](https://pypi.org/project/asicverifier/)
 [![PyPI - Version](https://img.shields.io/pypi/v/asicverifier?logo=pypi&label=PyPI&labelColor=black)](https://pypi.org/project/asicverifier/)
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/pipinfitriadi/asicverifier/latest?logo=Docker&label=latest&labelColor=black)](https://hub.docker.com/r/pipinfitriadi/asicverifier)
-[![GitHub Action - Python](https://img.shields.io/github/actions/workflow/status/pipinfitriadi/asicverifier/python.yml?logo=GitHub&label=Python&labelColor=black)](https://github.com/pipinfitriadi/asicverifier/actions/workflows/python.yml)
-[![GitHub Action - Docker](https://img.shields.io/github/actions/workflow/status/pipinfitriadi/asicverifier/docker.yml?logo=GitHub&label=Docker&labelColor=black)](https://github.com/pipinfitriadi/asicverifier/actions/workflows/docker.yml)
+[![GitHub Action](https://img.shields.io/github/actions/workflow/status/pipinfitriadi/asicverifier/ci-cd.yml?logo=GitHub&label=CI/CD&labelColor=black)](https://github.com/pipinfitriadi/asicverifier/actions/workflows/ci-cd.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/pipinfitriadi/asicverifier?logo=codecov&label=Coverage&labelColor=black)](https://app.codecov.io/github/pipinfitriadi/asicverifier)
 
 Asic Verifier for X-Road

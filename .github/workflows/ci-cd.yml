@@ -1,7 +1,7 @@
 # This file is part of AsicVerifier and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
-name: Python
+name: CI/CD
 on:
   pull_request:
   push:
@@ -21,6 +21,7 @@ jobs:
       startsWith(github.ref, 'refs/heads/hotfix/')
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{ github.ref }}
       - name: Cache venv
         id: cache-python-venv
         uses: actions/cache@v3
@@ -80,12 +81,6 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Test coverage must be 100% passed!
-        if:
-          github.ref_type == 'tag' ||
-          github.event_name == 'pull_request' ||
-          contains('refs/heads/main refs/heads/develop', github.ref) ||
-          startsWith(github.ref, 'refs/heads/release/') ||
-          startsWith(github.ref, 'refs/heads/hotfix/')
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   pypi:
     name: PyPI
