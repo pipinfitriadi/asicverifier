@@ -21,8 +21,8 @@ jobs:
       startsWith(github.ref, 'refs/heads/hotfix/')
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.ref }} | grep refs/heads/hotfix/0.1.5
-      - run: echo ${{ github.ref }} | egrep 'refs/heads/0.1.\d+'
+      - run: echo ${{ github.ref }} | egrep refs/heads/hotfix/0.1.5
+      - run: echo ${{ github.ref }} | egrep 'refs/heads/0.1.[0-9]+'
       # - run: echo 0.1.0-alpha | grep -E '^\d+\.\d+\.\d+$'
       - name: Cache venv
         id: cache-python-venv
