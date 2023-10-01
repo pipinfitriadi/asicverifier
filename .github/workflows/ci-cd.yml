@@ -17,8 +17,8 @@ jobs:
       github.ref_type == 'tag' ||
       github.event_name == 'pull_request' ||
       contains('refs/heads/main refs/heads/develop', github.ref) ||
-      startsWith(github.ref, 'refs/heads/release/') ||
-      startsWith(github.ref, 'refs/heads/hotfix/')
+      startsWith(github.ref, 'refs/heads/release/**') ||
+      startsWith(github.ref, 'refs/heads/hotfix/**')
     runs-on: ubuntu-latest
     steps:
       - name: Cache venv
@@ -84,8 +84,8 @@ jobs:
           github.ref_type == 'tag' ||
           github.event_name == 'pull_request' ||
           contains('refs/heads/main refs/heads/develop', github.ref) ||
-          startsWith(github.ref, 'refs/heads/release/') ||
-          startsWith(github.ref, 'refs/heads/hotfix/')
+          startsWith(github.ref, 'refs/heads/release/**') ||
+          startsWith(github.ref, 'refs/heads/hotfix/**')
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   pypi:
     name: PyPI
@@ -118,6 +118,7 @@ jobs:
   docker:
     name: Docker
     needs: pypi
+    if: endswith(github.ref, 'refs/tags/[0-9]+.[0-9]+.[0-9]+')
     runs-on: ubuntu-latest
     environment:
       name: docker
