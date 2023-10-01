@@ -41,7 +41,7 @@
             "label": "Python: Package install",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pip", "install", "."]
+            "args": ["-m", "pip", "install", ".[restful-api]"]
         },
         {
             "label": "Python: Package show",
