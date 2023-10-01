@@ -112,7 +112,7 @@ jobs:
   docker:
     name: Docker
     needs: pypi
-    # if: echo ${{ github.ref }} | egrep '^refs/tags/[0-9]+.[0-9]+.[0-9]+$'
+    if: echo ${{ github.ref }} | egrep '^refs/tags/[0-9]+.[0-9]+.[0-9]+$'
     runs-on: ubuntu-latest
     environment:
       name: docker
