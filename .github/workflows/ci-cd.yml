@@ -4,6 +4,7 @@
 name: CI/CD
 on:
   release:
+    types: [published]
   pull_request:
   push:
     branches: ['**']
