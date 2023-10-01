@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ github.ref }} | egrep '^refs/heads/hotfix/[0-9]+.[0-9]+.[0-9]+$'
-      - run: echo ${{ github.ref }}-alpha | egrep '^refs/heads/hotfix/[0-9]+.[0-9]+.[0-9]+$'
       - run: echo ${{ github.ref }}-alpha.1 | egrep '^refs/heads/hotfix/[0-9]+.[0-9]+.[0-9]+$'
       - name: Cache venv
         id: cache-python-venv
