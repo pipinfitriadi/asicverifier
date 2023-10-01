@@ -17,8 +17,8 @@ jobs:
       github.ref_type == 'tag' ||
       github.event_name == 'pull_request' ||
       contains('refs/heads/main refs/heads/develop', github.ref) ||
-      startsWith(github.ref, 'refs/head/release/') ||
-      startsWith(github.ref, 'refs/head/hotfix/')
+      startsWith(github.ref, 'refs/heads/release/') ||
+      startsWith(github.ref, 'refs/heads/hotfix/')
     runs-on: ubuntu-latest
     steps:
       - name: Cache venv
@@ -45,7 +45,6 @@ jobs:
     container:
       image: pipelinecomponents/flake8
     steps:
-      - run: echo ${{ github.ref }}
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -85,8 +84,8 @@ jobs:
           github.ref_type == 'tag' ||
           github.event_name == 'pull_request' ||
           contains('refs/heads/main refs/heads/develop', github.ref) ||
-          startsWith(github.ref, 'refs/head/release/') ||
-          startsWith(github.ref, 'refs/head/hotfix/')
+          startsWith(github.ref, 'refs/heads/release/') ||
+          startsWith(github.ref, 'refs/heads/hotfix/')
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   pypi:
     name: PyPI
