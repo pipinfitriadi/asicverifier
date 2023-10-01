@@ -22,8 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo 0.1.0 | grep 0.1.0 
-      - run: echo 0.1.0 | grep -E '^\d+\.\d+\.\d+$'
-      - run: echo 0.1.0-alpha | grep -E '^\d+\.\d+\.\d+$'
+      - run: echo ${{ github.ref }} | refs/heads/0.1.5
+      # - run: echo 0.1.0 | grep -E '^\d+\.\d+\.\d+$'
+      # - run: echo 0.1.0-alpha | grep -E '^\d+\.\d+\.\d+$'
       - name: Cache venv
         id: cache-python-venv
         uses: actions/cache@v3
