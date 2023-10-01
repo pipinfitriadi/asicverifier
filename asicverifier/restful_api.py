@@ -54,4 +54,4 @@ class RestfulApi:
             port=port,
             reload=reload,
             factory=True
-        )
+        )  # pragma: no cover
