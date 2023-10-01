@@ -16,7 +16,9 @@ jobs:
     if:
       github.ref_type == 'tag' ||
       github.event_name == 'pull_request' ||
-      contains('refs/heads/main refs/heads/develop', github.ref)
+      contains('refs/heads/main refs/heads/develop', github.ref) ||
+      startsWith(github.ref, 'refs/head/release/') ||
+      startsWith(github.ref, 'refs/head/hotfix/')
     runs-on: ubuntu-latest
     steps:
       - name: Cache venv
@@ -36,7 +38,7 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install --upgrade pip
-          pip install build 'coverage[toml]' httpx fastapi
+          pip install build 'coverage[toml]' httpx
   lint:
     name: Linter Test
     runs-on: ubuntu-latest
@@ -68,7 +70,7 @@ jobs:
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
       - name: Install package
-        run: pip install .
+        run: pip install '.[restful-api]'
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
@@ -81,7 +83,9 @@ jobs:
         if:
           github.ref_type == 'tag' ||
           github.event_name == 'pull_request' ||
-          contains('refs/heads/main refs/heads/develop', github.ref)
+          contains('refs/heads/main refs/heads/develop', github.ref) ||
+          startsWith(github.ref, 'refs/head/release/') ||
+          startsWith(github.ref, 'refs/head/hotfix/')
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   pypi:
     name: PyPI

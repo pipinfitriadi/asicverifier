@@ -23,8 +23,7 @@
                 "build",
                 "twine",
                 "'importlib_metadata<5'",
-                "flake8",
-                "fastapi"
+                "flake8"
             ]
         },
         {
