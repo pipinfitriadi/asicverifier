@@ -7,13 +7,23 @@ from datetime import datetime
 import json
 import unittest
 
+from click.testing import Result
+from typer.testing import CliRunner
+
 from asicverifier import extract_subject_or_issuer, extract_asic, to_datetime
+from asicverifier.__main__ import cli
+from asicverifier.restful_api import RestfulApi
 
 
 class TestAsicVerifier(unittest.TestCase):
     def __init__(self, methodName: str = 'runTest'):
         super().__init__(methodName)
         self.maxDiff = None
+
+    def test_main(self):
+        result: Result = CliRunner().invoke(cli, ['--help'])
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn(RestfulApi.run.__doc__, result.stdout)
 
     def test_to_datetime(self):
         self.assertEqual(
