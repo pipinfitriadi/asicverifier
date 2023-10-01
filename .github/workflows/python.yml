@@ -96,7 +96,6 @@ jobs:
       name: python
       url: https://pypi.org/project/${{ github.event.repository.name }}/
     permissions:
-      contents: read
       id-token: write
     steps:
       - name: Checkout
