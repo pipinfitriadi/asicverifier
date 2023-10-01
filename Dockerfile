@@ -12,7 +12,7 @@ RUN pip install \
         --upgrade \
         --root-user-action=ignore \
         --target=/opt/venv/ \
-        AsicVerifier
+        AsicVerifier[restful-api]
 
 FROM python:3.7-alpine
 LABEL maintainer='pipinfitriadi@gmail.com'
@@ -22,4 +22,4 @@ COPY --from=eclipse-temurin:8-alpine $JAVA_HOME $JAVA_HOME
 ENV PATH $JAVA_HOME/bin:$PATH
 COPY --from=venv /opt/venv/ /opt/venv/
 ENV PYTHONPATH $PYTHONPATH:/opt/venv/
-ENTRYPOINT [ "java", "-jar", "/lib/asicverifier.jar"]
+ENTRYPOINT ["/opt/venv/bin/asicverifier"]

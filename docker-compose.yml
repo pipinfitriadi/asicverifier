@@ -3,21 +3,12 @@
 
 version: '3.7'
 services:
-  venv:
-    build:
-      context: .
-      target: venv
-      platforms:
-        - linux/amd64
-      no_cache: true
-    image: pipinfitriadi/asicverifier:venv
   asicverifier:
     build:
       context: .
       platforms:
         - linux/amd64
       cache_from:
-        - pipinfitriadi/asicverifier:venv
         - type=registry,ref=pipinfitriadi/asicverifier
         - type=registry,ref=niis/xroad-security-server-sidecar:7.0.4
         - type=registry,ref=eclipse-temurin:8-alpine
@@ -25,6 +16,7 @@ services:
         - type=inline
     image: pipinfitriadi/asicverifier
     platform: linux/amd64
-    stdin_open: true
-    tty: true
-    entrypoint: sh
+    ports:
+      - 80:80
+    environment:
+      - RESTFUL_API_PATH=/asicverifier
