@@ -36,7 +36,7 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install --upgrade pip
-          pip install build "coverage[toml]"
+          pip install build 'coverage[toml]' httpx
   lint:
     name: Linter Test
     runs-on: ubuntu-latest

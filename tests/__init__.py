@@ -7,13 +7,44 @@ from datetime import datetime
 import json
 import unittest
 
-from asicverifier import extract_subject_or_issuer, extract_asic, to_datetime
+from click.testing import Result
+from typer.testing import CliRunner
+
+from asicverifier import (
+    AsicType,
+    asicverifier,
+    extract_subject_or_issuer,
+    extract_asic,
+    to_datetime
+)
+from asicverifier.__main__ import cli
+from asicverifier.restful_api import RestfulApi
+
+
+URL: str = 'https://bjb-security-server.access.digitalservice.id'
+QUERY_ID: str = 'XROAD-DISKOMINFO-JABAR-d60266d4-f4d6-4ef9-b3ab-90f8c4196282'
+X_ROAD_INSTANCE: str = 'XROAD-DISKOMINFO-JABAR'
+MEMBER_CLASS: str = 'FIN'
+MEMBER_CODE: str = 'bjb'
+SUBSYSTEM_CODE: str = 'QRIS'
+ASIC_TYPE: str = AsicType.RESPONSE
+ASIC_VERIFIER_RESPONSE: dict = {
+    'verificationconf_url': f'{URL}/verificationconf',
+    'asic_url': f'{URL}/asic?unique&{ASIC_TYPE}Only&queryId={QUERY_ID}&'
+    f'xRoadInstance={X_ROAD_INSTANCE}&memberClass={MEMBER_CLASS}&'
+    f'memberCode={MEMBER_CODE}&subsystemCode={SUBSYSTEM_CODE}'
+}
 
 
 class TestAsicVerifier(unittest.TestCase):
     def __init__(self, methodName: str = 'runTest'):
         super().__init__(methodName)
         self.maxDiff = None
+
+    def test_main(self):
+        result: Result = CliRunner().invoke(cli, ['--help'])
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn(RestfulApi.run.__doc__, result.stdout)
 
     def test_to_datetime(self):
         self.assertEqual(
@@ -64,3 +95,17 @@ class TestAsicVerifier(unittest.TestCase):
                 extract_asic(log_file.read()),
                 json.loads(json_file.read(), object_hook=datetime_parser)
             )
+
+    def test_asicverifier(self):
+        self.assertDictEqual(
+            asicverifier(
+                URL,
+                QUERY_ID,
+                X_ROAD_INSTANCE,
+                MEMBER_CLASS,
+                MEMBER_CODE,
+                SUBSYSTEM_CODE,
+                ASIC_TYPE
+            ),
+            ASIC_VERIFIER_RESPONSE
+        )

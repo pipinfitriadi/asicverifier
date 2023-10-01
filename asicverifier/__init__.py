@@ -4,7 +4,16 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 from datetime import datetime
+from enum import Enum
 import re
+from urllib.parse import urlencode, urljoin
+
+from dotenv import load_dotenv
+from importlib_metadata import PackageMetadata, metadata
+
+load_dotenv()
+META_DATA: PackageMetadata = metadata(__name__)
+SUMMARY: str = META_DATA['Summary']
 
 
 def to_datetime(string: str) -> datetime:
@@ -108,3 +117,37 @@ def extract_asic(message: str) -> dict:
             )
         ]
     }
+
+
+class AsicType(str, Enum):
+    REQUEST: str = 'request'
+    RESPONSE: str = 'response'
+
+
+def asicverifier(
+    security_server_url: str,
+    query_id: str,
+    x_road_instance: str,
+    member_class: str,
+    member_code: str,
+    subsystem_code: str,
+    type: AsicType = AsicType.REQUEST
+) -> dict:
+    verificationconf_url: str = urljoin(
+        security_server_url, 'verificationconf'
+    )
+    asic_url: str = '{url}?unique&{type}&{params}'.format(
+        url=urljoin(security_server_url, 'asic'),
+        type={
+            enum.value: f'{enum.value}Only'
+            for enum in AsicType
+        }[type.value],
+        params=urlencode({
+            'queryId': query_id,
+            'xRoadInstance': x_road_instance,
+            'memberClass': member_class,
+            'memberCode': member_code,
+            'subsystemCode': subsystem_code
+        })
+    )
+    return {'verificationconf_url': verificationconf_url, 'asic_url': asic_url}
