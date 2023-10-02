@@ -6,12 +6,14 @@
 from datetime import datetime
 from enum import Enum
 import re
+from os import getenv
 from urllib.parse import urlencode, urljoin
 
 from dotenv import load_dotenv
 from importlib_metadata import PackageMetadata, metadata
 
 load_dotenv()
+JAR_PATH: str = getenv('JAR_PATH', '/lib/asicverifier.jar')
 META_DATA: PackageMetadata = metadata(__name__)
 SUMMARY: str = META_DATA['Summary']
 
