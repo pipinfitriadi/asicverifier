@@ -140,13 +140,13 @@ def asicverifier(
     member_code: str,
     subsystem_code: str,
     type: AsicType = AsicType.REQUEST,
-    refresh_conf: bool = False
+    conf_refresh: bool = False
 ) -> dict:
     CONF_PATH: str = (
         f'asicverifier/security-server/{urlparse(security_server_url).netloc}/'
     )
 
-    if refresh_conf or not isdir(CONF_PATH):
+    if conf_refresh or not isdir(CONF_PATH):
         # Zip File
         response = requests.get(
             urljoin(security_server_url, 'verificationconf'),
@@ -187,22 +187,21 @@ def asicverifier(
         with NamedTemporaryFile() as temp:
             temp.write(response.content)
             temp.seek(0)
-            asice: dict = extract_asice(
-                subprocess.run(
-                    [
-                        'java', '-jar',
-                        getenv('JAR_PATH', '/lib/asicverifier.jar'),
-                        f'{CONF_PATH}/verificationconf/',
-                        temp.name
-                    ],
-                    stdin=subprocess.Popen(
-                        ['yes', 'n'], stdout=subprocess.PIPE
-                    ).stdout,
-                    capture_output=True
-                ).stdout.decode()
-            )
+            message: str = subprocess.run(
+                [
+                    'java', '-jar',
+                    getenv('JAR_PATH', '/lib/asicverifier.jar'),
+                    f'{CONF_PATH}/verificationconf/',
+                    temp.name
+                ],
+                stdin=subprocess.Popen(
+                    ['yes', 'n'], stdout=subprocess.PIPE
+                ).stdout,
+                capture_output=True
+            ).stdout.decode()
+            logging.debug(message)
     except requests.exceptions.HTTPError:
         logging.error(f"Asice: '{response.text}'")
         raise
 
-    return asice
+    return extract_asice(message)
