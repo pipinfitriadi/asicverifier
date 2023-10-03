@@ -5,15 +5,21 @@
 
 from datetime import datetime
 from enum import Enum
+from io import BytesIO
+import logging
 import re
 from os import getenv
-from urllib.parse import urlencode, urljoin
+from os.path import isdir
+import subprocess
+from tempfile import NamedTemporaryFile
+from urllib.parse import urlencode, urljoin, urlparse
+from zipfile import ZipFile
 
 from dotenv import load_dotenv
 from importlib_metadata import PackageMetadata, metadata
+import requests
 
 load_dotenv()
-JAR_PATH: str = getenv('JAR_PATH', '/lib/asicverifier.jar')
 META_DATA: PackageMetadata = metadata(__name__)
 SUMMARY: str = META_DATA['Summary']
 
@@ -29,7 +35,7 @@ def extract_subject_or_issuer(message: str) -> dict:
     ])
 
 
-def extract_asic(message: str) -> dict:
+def extract_asice(message: str) -> dict:
     return {
         'verification': re.search(
             r'Verification (.+)\.', message
@@ -133,23 +139,70 @@ def asicverifier(
     member_class: str,
     member_code: str,
     subsystem_code: str,
-    type: AsicType = AsicType.REQUEST
+    type: AsicType = AsicType.REQUEST,
+    refresh_conf: bool = False
 ) -> dict:
-    verificationconf_url: str = urljoin(
-        security_server_url, 'verificationconf'
+    CONF_PATH: str = (
+        f'asicverifier/security-server/{urlparse(security_server_url).netloc}/'
     )
-    asic_url: str = '{url}?unique&{type}&{params}'.format(
-        url=urljoin(security_server_url, 'asic'),
-        type={
-            enum.value: f'{enum.value}Only'
-            for enum in AsicType
-        }[type.value],
-        params=urlencode({
-            'queryId': query_id,
-            'xRoadInstance': x_road_instance,
-            'memberClass': member_class,
-            'memberCode': member_code,
-            'subsystemCode': subsystem_code
-        })
+
+    if refresh_conf or not isdir(CONF_PATH):
+        # Zip File
+        response = requests.get(
+            urljoin(security_server_url, 'verificationconf'),
+            allow_redirects=True
+        )
+
+        try:
+            response.raise_for_status()
+
+            with ZipFile(BytesIO(response.content)) as zip_file:
+                zip_file.extractall(CONF_PATH)
+        except requests.exceptions.HTTPError:
+            logging.error(f"verificationconf: '{response.text}'")
+            raise
+
+    # Asice File
+    response = requests.get(
+        '{url}?unique&{type}&{params}'.format(
+            url=urljoin(security_server_url, 'asic'),
+            type={
+                enum.value: f'{enum.value}Only'
+                for enum in AsicType
+            }[type.value],
+            params=urlencode({
+                'queryId': query_id,
+                'xRoadInstance': x_road_instance,
+                'memberClass': member_class,
+                'memberCode': member_code,
+                'subsystemCode': subsystem_code
+            })
+        ),
+        allow_redirects=True
     )
-    return {'verificationconf_url': verificationconf_url, 'asic_url': asic_url}
+
+    try:
+        response.raise_for_status()
+
+        with NamedTemporaryFile() as temp:
+            temp.write(response.content)
+            temp.seek(0)
+            asice: dict = extract_asice(
+                subprocess.run(
+                    [
+                        'java', '-jar',
+                        getenv('JAR_PATH', '/lib/asicverifier.jar'),
+                        f'{CONF_PATH}/verificationconf/',
+                        temp.name
+                    ],
+                    stdin=subprocess.Popen(
+                        ['yes', 'n'], stdout=subprocess.PIPE
+                    ).stdout,
+                    capture_output=True
+                ).stdout.decode()
+            )
+    except requests.exceptions.HTTPError:
+        logging.error(f"Asice: '{response.text}'")
+        raise
+
+    return asice

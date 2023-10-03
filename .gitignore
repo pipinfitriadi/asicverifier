@@ -5,8 +5,10 @@
 __pycache__/
 build/
 dist/
+security-server/
 venv/
 
+*.ipynb
 .coverage*
 .env
 .pypirc

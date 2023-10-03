@@ -14,7 +14,7 @@ from asicverifier import (
     AsicType,
     asicverifier,
     extract_subject_or_issuer,
-    extract_asic,
+    extract_asice,
     to_datetime
 )
 from asicverifier.__main__ import cli
@@ -74,7 +74,7 @@ class TestAsicVerifier(unittest.TestCase):
             }
         )
 
-    def test_extract_asic(self):
+    def test_extract_asice(self):
         FILENAME: str = 'tests/data/asicverifier'
 
         def datetime_parser(data: dict) -> dict:
@@ -92,7 +92,7 @@ class TestAsicVerifier(unittest.TestCase):
         with open(f'{FILENAME}.log') as log_file, open(
                 f'{FILENAME}.json') as json_file:
             self.assertDictEqual(
-                extract_asic(log_file.read()),
+                extract_asice(log_file.read()),
                 json.loads(json_file.read(), object_hook=datetime_parser)
             )
 
