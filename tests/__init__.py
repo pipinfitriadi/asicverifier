@@ -14,7 +14,7 @@ import requests
 from typer.testing import CliRunner
 
 from asicverifier import (
-    AsicType,
+    AsiceType,
     asicverifier,
     extract_subject_or_issuer,
     extract_asice,
@@ -30,7 +30,7 @@ X_ROAD_INSTANCE: str = 'XROAD-DISKOMINFO-JABAR'
 MEMBER_CLASS: str = 'FIN'
 MEMBER_CODE: str = 'bjb'
 SUBSYSTEM_CODE: str = 'QRIS'
-ASIC_TYPE: str = AsicType.RESPONSE
+ASICE_TYPE: str = AsiceType.RESPONSE
 DIRS: str = 'tests/data/'
 
 
@@ -74,7 +74,7 @@ def mocked_requests_get(*args, **kwargs) -> MockResponse:
             content = zip_file.read()
     # asice_url
     elif url == (
-        f'{URL}/asic?unique&{ASIC_TYPE}Only&queryId={QUERY_ID}&'
+        f'{URL}/asic?unique&{ASICE_TYPE}Only&queryId={QUERY_ID}&'
         f'xRoadInstance={X_ROAD_INSTANCE}&memberClass={MEMBER_CLASS}&'
         f'memberCode={MEMBER_CODE}&subsystemCode={SUBSYSTEM_CODE}'
     ):
@@ -85,7 +85,7 @@ def mocked_requests_get(*args, **kwargs) -> MockResponse:
         status_code = 404
     # for negetive test Asice File
     elif url == (
-        f'{URL}/asic?unique&{AsicType.REQUEST}Only&queryId={QUERY_ID}&'
+        f'{URL}/asic?unique&{AsiceType.REQUEST}Only&queryId={QUERY_ID}&'
         f'xRoadInstance={X_ROAD_INSTANCE}&memberClass={MEMBER_CLASS}&'
         f'memberCode={MEMBER_CODE}&subsystemCode={SUBSYSTEM_CODE}'
     ):
@@ -149,7 +149,7 @@ class TestAsicVerifier(unittest.TestCase):
                 MEMBER_CLASS,
                 MEMBER_CODE,
                 SUBSYSTEM_CODE,
-                ASIC_TYPE,
+                ASICE_TYPE,
                 True
             ),
             ASIC_VERIFIER_RESPONSE
@@ -162,7 +162,7 @@ class TestAsicVerifier(unittest.TestCase):
                 MEMBER_CLASS,
                 MEMBER_CODE,
                 SUBSYSTEM_CODE,
-                ASIC_TYPE
+                ASICE_TYPE
             ),
             ASIC_VERIFIER_RESPONSE
         )

@@ -88,7 +88,7 @@ class AsicFile(BaseModel):
     status: str
 
 
-class Asic(BaseModel):
+class Asice(BaseModel):
     verification: str
     signer: AsicSigner
     ocsp_response: AsicOcspResponse
@@ -124,7 +124,7 @@ class RestfulApi:
         )
         router = APIRouter()
         router.get(
-            '/', name='verifier', response_model=Union[Asic, dict]
+            '/', name='verifier', response_model=Union[Asice, dict]
         )(asicverifier)
 
         api.include_router(router, prefix=RESTFUL_API_PATH)

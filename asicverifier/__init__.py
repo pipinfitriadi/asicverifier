@@ -127,7 +127,7 @@ def extract_asice(message: str) -> dict:
     }
 
 
-class AsicType(str, Enum):
+class AsiceType(str, Enum):
     REQUEST: str = 'request'
     RESPONSE: str = 'response'
 
@@ -139,7 +139,7 @@ def asicverifier(
     member_class: str,
     member_code: str,
     subsystem_code: str,
-    type: AsicType = AsicType.REQUEST,
+    asice_type: AsiceType = AsiceType.REQUEST,
     conf_refresh: bool = False
 ) -> dict:
     CONF_PATH: str = (
@@ -164,12 +164,12 @@ def asicverifier(
 
     # Asice File
     response = requests.get(
-        '{url}?unique&{type}&{params}'.format(
+        '{url}?unique&{asice_type}&{params}'.format(
             url=urljoin(security_server_url, 'asic'),
-            type={
+            asice_type={
                 enum.value: f'{enum.value}Only'
-                for enum in AsicType
-            }[type.value],
+                for enum in AsiceType
+            }[asice_type.value],
             params=urlencode({
                 'queryId': query_id,
                 'xRoadInstance': x_road_instance,

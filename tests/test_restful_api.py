@@ -15,7 +15,7 @@ from . import (
     MEMBER_CLASS,
     MEMBER_CODE,
     SUBSYSTEM_CODE,
-    ASIC_TYPE,
+    ASICE_TYPE,
     ASIC_VERIFIER_RESPONSE,
     datetime_parser,
     mocked_requests_get
@@ -42,7 +42,7 @@ class TestRestfulApi(unittest.TestCase):
                     'member_class': MEMBER_CLASS,
                     'member_code': MEMBER_CODE,
                     'subsystem_code': SUBSYSTEM_CODE,
-                    'type': ASIC_TYPE.value
+                    'asice_type': ASICE_TYPE.value
                 }
             ).json(object_hook=datetime_parser),
             ASIC_VERIFIER_RESPONSE
