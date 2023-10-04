@@ -38,7 +38,7 @@ def extract_subject_or_issuer(message: str) -> dict:
 def extract_asice(message: str) -> dict:
     return {
         'verification': re.search(
-            r'Verification (.+)\.', message
+            r'Verification (\w+)\.', message
         ).group(1),
         **{
             parent: {
@@ -184,7 +184,8 @@ def asicverifier(
     try:
         response.raise_for_status()
 
-        with NamedTemporaryFile() as temp:
+        with NamedTemporaryFile() as temp, subprocess.Popen(
+                ['yes', 'n'], stdout=subprocess.PIPE) as proc_yes:
             temp.write(response.content)
             temp.seek(0)
             message: str = subprocess.run(
@@ -194,11 +195,10 @@ def asicverifier(
                     f'{CONF_PATH}/verificationconf/',
                     temp.name
                 ],
-                stdin=subprocess.Popen(
-                    ['yes', 'n'], stdout=subprocess.PIPE
-                ).stdout,
+                stdin=proc_yes.stdout,
                 capture_output=True
             ).stdout.decode()
+            proc_yes.kill()
             logging.debug(message)
     except requests.exceptions.HTTPError:
         logging.error(f"Asice: '{response.text}'")
