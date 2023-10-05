@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
+        id: download-artifact
         uses: actions/download-artifact@v3
         with:
           name: java-jar
@@ -44,13 +45,13 @@ jobs:
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
           docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > asicverifier.jar
           docker rm -v $container_id
+          ls -lah | grep asicverifier.jar
       - name: Upload artifact
-        if: success()
+        if: steps.download-artifact.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: java-jar
           path: asicverifier.jar
-      - run: ls -lah
   venv:
     name: Virtual environment
     if:
