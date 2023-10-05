@@ -76,7 +76,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - run: java --help
+      - run: java
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
