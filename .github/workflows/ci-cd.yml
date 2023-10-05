@@ -33,28 +33,23 @@ jobs:
       startsWith(github.ref, 'refs/heads/hotfix/')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Cache jar
         id: cache-java-jar
         uses: actions/cache@v3
         with:
           path: asicverifier.jar
-          key: java-jar
+          key: app/java-jar
       - name: Get jar file from docker
         if: steps.cache-java-jar.outputs.cache-hit != 'true'
         run: |
           docker run --rm --platform linux/amd64 -v $PWD/app/:/app/ --entrypoint cp niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar app/asicverifier.jar
-          mv app/asicverifier.jar asicverifier.jar
-          ls -lah | grep asicverifier.jar
+          ls -lah app/ | grep asicverifier.jar
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '8'
-      - run: java -jar asicverifier.jar
+      - run: java -jar app/asicverifier.jar
   venv:
     name: Virtual environment
     if:
@@ -111,11 +106,11 @@ jobs:
       - name: Cache jar
         uses: actions/cache@v3
         with:
-          path: asicverifier.jar
+          path: app/asicverifier.jar
           key: java-jar
       - run: |
           ls -lah
-          java -jar asicverifier.jar
+          java -jar app/asicverifier.jar
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
