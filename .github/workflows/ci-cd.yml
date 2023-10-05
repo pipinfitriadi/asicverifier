@@ -41,15 +41,7 @@ jobs:
           key: java-jar
       - name: Get jar file from docker
         if: steps.cache-java-jar.outputs.cache-hit != 'true'
-        run: |
-          docker run --rm --platform linux/amd64 -v $PWD/app/:/app/ --entrypoint cp niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar app/asicverifier.jar
-          ls -lah app/ | grep asicverifier.jar
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '8'
-      - run: java -jar app/asicverifier.jar
+        run: docker run --rm --platform linux/amd64 -v $PWD/app/:/app/ --entrypoint cp niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar app/asicverifier.jar
   venv:
     name: Virtual environment
     if:
@@ -81,6 +73,8 @@ jobs:
   unittest:
     name: Unit Test
     needs: [jar, venv]
+    env:
+      JAR_PATH: app/asicverifier.jar
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -101,16 +95,15 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '8'
       - name: Cache jar
         uses: actions/cache@v3
         with:
           path: app/asicverifier.jar
           key: java-jar
-      - run: |
-          ls -lah
-          java -jar app/asicverifier.jar
+      - name: Test java
+        run: java -jar app/asicverifier.jar
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
