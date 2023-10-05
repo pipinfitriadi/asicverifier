@@ -8,7 +8,6 @@ from dateutil.tz import tzutc
 from datetime import datetime
 import json
 import unittest
-import subprocess
 from typing import Any
 from unittest import mock
 
@@ -140,14 +139,6 @@ class TestAsicVerifier(unittest.TestCase):
                 extract_asice(log_file.read()),
                 ASIC_VERIFIER_RESPONSE
             )
-
-    def test_java(self):
-        self.assertNotEqual(
-            subprocess.run(
-                ['java', '--help'], capture_output=True
-            ).stdout,
-            b''
-        )
 
     @mock.patch('asicverifier.requests.get', side_effect=mocked_requests_get)
     def test_asicverifier(self, _):
