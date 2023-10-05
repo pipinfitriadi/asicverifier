@@ -47,12 +47,12 @@ jobs:
           docker rm -v $container_id
           docker ps -a
           ls -lah | grep asicverifier.jar
-      - name: Upload artifact
-        if: steps.cache-java-jar.outputs.cache-hit != 'true'
-        uses: actions/upload-artifact@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
         with:
-          name: java-jar
-          path: asicverifier.jar
+          distribution: 'temurin'
+          java-version: '8'
+      - run: java -jar asicverifier.jar
   venv:
     name: Virtual environment
     if:
