@@ -41,13 +41,15 @@ jobs:
           path: asicverifier.jar
       - name: Get jar file from docker
         if: failure()
+        id: get-jar-from-docker
         run: |
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
           docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > asicverifier.jar
           docker rm -v $container_id
+          docker ps -a
           ls -lah | grep asicverifier.jar
       - name: Upload artifact
-        if: steps.download-artifact.outcome == 'failure'
+        if: steps.get-jar-from-docker.outcome == 'success'
         uses: actions/upload-artifact@v3
         with:
           name: java-jar
