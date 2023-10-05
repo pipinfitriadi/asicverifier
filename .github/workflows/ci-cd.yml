@@ -25,6 +25,7 @@ jobs:
         run: flake8
   jar:
     name: Get Jar File
+    continue-on-error: true
     if:
       github.ref_type == 'tag' ||
       github.event_name == 'pull_request' ||
@@ -34,16 +35,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        id: download-artifact
         uses: actions/download-artifact@v3
         with:
           name: java-jar
           path: asicverifier.jar
-      - run: echo ${{ steps.download-artifact.outcome }}
-        if: failure()
       - name: Get jar file from docker
         if: failure()
-        id: get-jar-from-docker
         run: |
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
           docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > asicverifier.jar
@@ -114,7 +111,9 @@ jobs:
         with:
           name: java-jar
           path: asicverifier.jar
-      - run: java -jar asicverifier.jar
+      - run: |
+          ls -lah
+          java -jar asicverifier.jar
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
