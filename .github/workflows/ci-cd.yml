@@ -42,10 +42,8 @@ jobs:
       - name: Get jar file from docker
         if: steps.cache-java-jar.outputs.cache-hit != 'true'
         run: |
-          container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
-          docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > asicverifier.jar
-          docker rm -v $container_id
-          docker ps -a
+          docker run --rm --platform linux/amd64 -v $PWD/app/:/app/ --entrypoint cp niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar app/asicverifier.jar
+          mv app/asicverifier.jar asicverifier.jar
           ls -lah | grep asicverifier.jar
       - name: Set up Java
         uses: actions/setup-java@v3
