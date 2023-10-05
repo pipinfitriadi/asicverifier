@@ -39,6 +39,7 @@ jobs:
         with:
           name: java-jar
           path: asicverifier.jar
+      - run: echo ${{ steps.download-artifact.outcome }}
       - name: Get jar file from docker
         if: steps.download-artifact.outcome == 'failure'
         id: get-jar-from-docker
