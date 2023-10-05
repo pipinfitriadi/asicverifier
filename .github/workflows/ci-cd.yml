@@ -37,8 +37,8 @@ jobs:
         id: cache-java-jar
         uses: actions/cache@v3
         with:
-          path: asicverifier.jar
-          key: app/java-jar
+          path: app/asicverifier.jar
+          key: java-jar
       - name: Get jar file from docker
         if: steps.cache-java-jar.outputs.cache-hit != 'true'
         run: |
