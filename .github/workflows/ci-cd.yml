@@ -37,20 +37,20 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-jar
-          path: /lib/asicverifier.jar
+          path: asicverifier.jar
       - name: Get jar file from docker
         if: failure()
         run: |
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
-          docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > /lib/asicverifier.jar
+          docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > asicverifier.jar
           docker rm -v $container_id
       - name: Upload artifact
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: java-jar
-          path: /lib/asicverifier.jar
-      - run: ls -lah /lib/
+          path: asicverifier.jar
+      - run: ls -lah
   venv:
     name: Virtual environment
     if:
@@ -108,8 +108,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-jar
-          path: /lib/asicverifier.jar
-      - run: java -jar /lib/asicverifier.jar
+          path: asicverifier.jar
+      - run: java -jar asicverifier.jar
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
