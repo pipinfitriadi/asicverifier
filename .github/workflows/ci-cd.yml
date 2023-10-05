@@ -25,7 +25,6 @@ jobs:
         run: flake8
   jar:
     name: Get Jar File
-    continue-on-error: true
     if:
       github.ref_type == 'tag' ||
       github.event_name == 'pull_request' ||
@@ -34,12 +33,14 @@ jobs:
       startsWith(github.ref, 'refs/heads/hotfix/')
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
+      - name: Cache jar
+        id: cache-java-jar
+        uses: actions/cache@v3
         with:
-          name: java-jar
+          path: asicverifier.jar
+          key: java-jar
       - name: Get jar file from docker
-        if: failure()
+        if: steps.cache-java-jar.outputs.cache-hit != 'true'
         run: |
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
           docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > asicverifier.jar
@@ -47,7 +48,7 @@ jobs:
           docker ps -a
           ls -lah | grep asicverifier.jar
       - name: Upload artifact
-        if: failure()
+        if: steps.cache-java-jar.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v3
         with:
           name: java-jar
@@ -105,10 +106,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - name: Download artifact
-        uses: actions/download-artifact@v3
+      - name: Cache jar
+        uses: actions/cache@v3
         with:
-          name: java-jar
+          path: asicverifier.jar
+          key: java-jar
       - run: |
           ls -lah
           java -jar asicverifier.jar
