@@ -11,6 +11,37 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+'
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 jobs:
+  lint:
+    name: Linter Test
+    runs-on: ubuntu-latest
+    container:
+      image: pipelinecomponents/flake8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Lint with flake8
+        run: flake8
+  jar:
+    name: Get Jar File
+    if:
+      github.ref_type == 'tag' ||
+      github.event_name == 'pull_request' ||
+      contains('refs/heads/main refs/heads/develop', github.ref) ||
+      startsWith(github.ref, 'refs/heads/release/') ||
+      startsWith(github.ref, 'refs/heads/hotfix/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache jar
+        id: cache-java-jar
+        uses: actions/cache@v3
+        with:
+          path: app/asicverifier.jar
+          key: java-jar
+      - name: Get jar file from docker
+        if: steps.cache-java-jar.outputs.cache-hit != 'true'
+        run: docker run --rm --platform linux/amd64 -v $PWD/app/:/app/ --entrypoint cp niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar app/asicverifier.jar
   venv:
     name: Virtual environment
     if:
@@ -39,21 +70,9 @@ jobs:
           . venv/bin/activate
           pip install --upgrade pip
           pip install build 'coverage[toml]' httpx
-  lint:
-    name: Linter Test
-    runs-on: ubuntu-latest
-    container:
-      image: pipelinecomponents/flake8
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Lint with flake8
-        run: flake8
   unittest:
     name: Unit Test
-    needs: venv
+    needs: [jar, venv]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -71,7 +90,19 @@ jobs:
           echo PATH=$PATH >> $GITHUB_ENV
       - name: Install package
         run: pip install '.[restful-api]'
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '8'
+      - name: Cache jar
+        uses: actions/cache@v3
+        with:
+          path: app/asicverifier.jar
+          key: java-jar
       - name: Test
+        env:
+          JAR_PATH: app/asicverifier.jar
         run: python -m coverage run -m unittest
       - name: Display test coverage
         run: python -m coverage report -m

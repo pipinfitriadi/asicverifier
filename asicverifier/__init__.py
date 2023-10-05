@@ -3,6 +3,8 @@
 # This module is part of AsicVerifier and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+from dateutil import tz
+from dateutil.parser import parse
 from datetime import datetime
 from enum import Enum
 from io import BytesIO
@@ -25,7 +27,7 @@ SUMMARY: str = META_DATA['Summary']
 
 
 def to_datetime(string: str) -> datetime:
-    return datetime.strptime(string, r'%a %b %d %H:%M:%S %Z %Y')
+    return parse(string, tzinfos={'WIB': tz.gettz('Asia/Jakarta')})
 
 
 def extract_subject_or_issuer(message: str) -> dict:
