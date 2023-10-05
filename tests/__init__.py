@@ -4,6 +4,7 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 from dateutil.parser import parse
+from dateutil.tz import tzutc
 from datetime import datetime
 import json
 import unittest
@@ -107,7 +108,7 @@ class TestAsicVerifier(unittest.TestCase):
     def test_to_datetime(self):
         self.assertEqual(
             to_datetime('Mon May 29 08:33:50 GMT 2023'),
-            datetime(2023, 5, 29, 8, 33, 50)
+            datetime(2023, 5, 29, 8, 33, 50, tzinfo=tzutc())
         )
 
     def test_extract_subject_or_issuer(self):
