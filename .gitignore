@@ -5,9 +5,12 @@
 __pycache__/
 build/
 dist/
+security-server/
 venv/
 
+*.ipynb
 .coverage*
+.env
 .pypirc
 # Get this jar file from X-Road Security Server path /usr/share/xroad/jlib/asicverifier.jar
 asicverifier.jar

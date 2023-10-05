@@ -2,7 +2,7 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 FROM python:3.7-alpine AS venv
-LABEL maintainer="pipinfitriadi@gmail.com"
+LABEL maintainer=pipinfitriadi@gmail.com
 ADD https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h skipcache
 RUN pip install \
         --upgrade \
@@ -16,11 +16,11 @@ RUN pip install \
         AsicVerifier[restful-api]
 
 FROM python:3.7-alpine
-LABEL maintainer='pipinfitriadi@gmail.com'
+LABEL maintainer=pipinfitriadi@gmail.com
 COPY --from=niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar /lib/
 ENV JAVA_HOME /opt/java/openjdk
 COPY --from=eclipse-temurin:8-alpine $JAVA_HOME $JAVA_HOME
 ENV PATH $JAVA_HOME/bin:$PATH
 COPY --from=venv /opt/venv/ /opt/venv/
 ENV PYTHONPATH $PYTHONPATH:/opt/venv/
-ENTRYPOINT ["/opt/venv/bin/asicverifier"]
+ENTRYPOINT /opt/venv/bin/asicverifier

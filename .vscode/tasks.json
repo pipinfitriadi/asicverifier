@@ -18,10 +18,10 @@
             "command": "${command:python.interpreterPath}",
             "args": [
                 "-m", "pip", "install",
+                "twine",
+                "build",
                 "'coverage[toml]'",
                 "httpx",
-                "build",
-                "twine",
                 "'importlib_metadata<5'",
                 "flake8"
             ]
@@ -41,7 +41,7 @@
             "label": "Python: Package install",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pip", "install", ".[restful-api]"]
+            "args": ["-m", "pip", "install", "'.[restful-api]'"]
         },
         {
             "label": "Python: Package show",
@@ -57,18 +57,7 @@
             "args": ["-m", "flake8", "--exclude", "venv/"]
         },
         {
-            "label": "Python: Package test unit",
-            "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "coverage", "run", "-m", "unittest"]
-        },
-        {
-            "label": "Python: Package test",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Python: Package test linter",
-                "Python: Package test unit",
-            ],
+            "label": "Python: Package test report",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": ["-m", "coverage", "report", "-m"]
@@ -81,11 +70,7 @@
         },
         {
             "label": "Python: Release PyPI",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Python: Package test",
-                "Python: Package build"
-            ],
+            "dependsOn": "Python: Package build",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": ["-m", "twine", "upload", "--config-file", ".pypirc", "--skip-existing", "dist/*"]
