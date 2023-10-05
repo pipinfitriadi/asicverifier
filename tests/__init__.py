@@ -47,8 +47,7 @@ def datetime_parser(data: dict, format: str = r'%Y-%m-%dT%H:%M:%S') -> dict:
 
 with open(f'{DIRS}/asicverifier.json') as json_file:
     ASIC_VERIFIER_RESPONSE: dict = json.loads(
-        json_file.read(),
-        object_hook=lambda value: datetime_parser(value, r'%Y-%m-%d %H:%M:%S')
+        json_file.read(), object_hook=datetime_parser
     )
 
 
