@@ -42,7 +42,7 @@ jobs:
         if: failure()
         run: |
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
-          docker cp $container_id:/lib/asicverifier.jar - > /lib/asicverifier.jar
+          docker cp $container_id:/usr/share/xroad/jlib/asicverifier.jar - > /lib/asicverifier.jar
           docker rm -v $container_id
       - name: Upload artifact
         if: success()
