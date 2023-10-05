@@ -38,7 +38,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-jar
-          path: asicverifier.jar
       - name: Get jar file from docker
         if: failure()
         run: |
@@ -110,7 +109,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-jar
-          path: asicverifier.jar
       - run: |
           ls -lah
           java -jar asicverifier.jar
