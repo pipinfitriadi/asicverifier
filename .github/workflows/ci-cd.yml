@@ -11,6 +11,46 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+'
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 jobs:
+  lint:
+    name: Linter Test
+    runs-on: ubuntu-latest
+    container:
+      image: pipelinecomponents/flake8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Lint with flake8
+        run: flake8
+  jar:
+    name: Get Jar File
+    if:
+      github.ref_type == 'tag' ||
+      github.event_name == 'pull_request' ||
+      contains('refs/heads/main refs/heads/develop', github.ref) ||
+      startsWith(github.ref, 'refs/heads/release/') ||
+      startsWith(github.ref, 'refs/heads/hotfix/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: java-jar
+          path: /lib/asicverifier.jar
+      - name: Get jar file from docker
+        if: failure()
+        run: |
+          container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
+          docker cp $container_id:/lib/asicverifier.jar - > /lib/asicverifier.jar
+          docker rm -v $container_id
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-jar
+          path: /lib/asicverifier.jar
+      - run: ls -lah /lib/
   venv:
     name: Virtual environment
     if:
@@ -39,21 +79,9 @@ jobs:
           . venv/bin/activate
           pip install --upgrade pip
           pip install build 'coverage[toml]' httpx
-  lint:
-    name: Linter Test
-    runs-on: ubuntu-latest
-    container:
-      image: pipelinecomponents/flake8
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Lint with flake8
-        run: flake8
   unittest:
     name: Unit Test
-    needs: venv
+    needs: [jar, venv]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -76,7 +104,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - run: java
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: java-jar
+          path: /lib/asicverifier.jar
+      - run: java -jar /lib/asicverifier.jar
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
