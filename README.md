@@ -21,10 +21,11 @@ Asic Verifier for X-Road
 
 ## Environment
 
-| Name               | Type        | Default |
-|--------------------|-------------|---------|
-| `RESTFUL_API_PATH` | String Path | /       |
-| `DEV_MODE`         | Bool        | false   |
+| Name               | Type             | Default                 |
+|--------------------|------------------|-------------------------|
+| `RESTFUL_API_PATH` | String URL Path  | `/`                     |
+| `JAR_PATH`         | String File Path | `/lib/asicverifier.jar` |
+| `DEV_MODE`         | Bool             | `false`                 |
 
 ## Docker
 
