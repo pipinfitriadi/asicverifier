@@ -73,8 +73,6 @@ jobs:
   unittest:
     name: Unit Test
     needs: [jar, venv]
-    env:
-      JAR_PATH: app/asicverifier.jar
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -105,6 +103,8 @@ jobs:
       - name: Test java
         run: java -jar app/asicverifier.jar
       - name: Test
+        env:
+          JAR_PATH: app/asicverifier.jar
         run: python -m coverage run -m unittest
       - name: Display test coverage
         run: python -m coverage report -m
