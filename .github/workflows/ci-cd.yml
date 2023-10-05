@@ -40,7 +40,7 @@ jobs:
           name: java-jar
           path: asicverifier.jar
       - name: Get jar file from docker
-        if: failure()
+        if: steps.download-artifact.outcome == 'failure'
         id: get-jar-from-docker
         run: |
           container_id=$(docker create --platform linux/amd64 niis/xroad-security-server-sidecar:7.0.4)
