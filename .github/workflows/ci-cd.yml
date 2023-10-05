@@ -100,8 +100,6 @@ jobs:
         with:
           path: app/asicverifier.jar
           key: java-jar
-      - name: Test java
-        run: java -jar app/asicverifier.jar
       - name: Test
         env:
           JAR_PATH: app/asicverifier.jar
