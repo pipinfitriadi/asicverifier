@@ -140,7 +140,7 @@ def asicverifier(
     member_code: str,
     subsystem_code: str,
     asice_type: AsiceType = AsiceType.REQUEST,
-    conf_refresh: bool = False
+    conf_refresh: bool = None
 ) -> dict:
     CONF_PATH: str = (
         f'asicverifier/security-server/{urlparse(security_server_url).netloc}/'

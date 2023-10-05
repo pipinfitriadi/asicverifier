@@ -5,25 +5,24 @@
 
 from datetime import datetime
 from os import getenv
-from typing import List, Union
+from typing import Any, List
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import (
     BaseModel,
-    DirectoryPath,
     EmailStr,
     Field,
-    FilePath,
+    HttpUrl,
     NonNegativeInt
 )
 import uvicorn
 
-from . import asicverifier, META_DATA, SUMMARY
+from . import AsiceType, asicverifier, META_DATA, SUMMARY
 
 
 class AsicSignerId(BaseModel):
-    subsystem: DirectoryPath
+    subsystem: str
 
 
 class AsicSignValid(BaseModel):
@@ -83,7 +82,7 @@ class AsicTimeStamp(BaseModel):
 
 
 class AsicFile(BaseModel):
-    path: FilePath
+    path: str
     digist: str
     status: str
 
@@ -94,6 +93,19 @@ class Asice(BaseModel):
     ocsp_response: AsicOcspResponse
     timestamp: AsicTimeStamp
     file: List[AsicFile]
+
+
+StringNoneEmptySpace: Any = Field(pattern=r'^[\w\-]+$')
+
+
+class AsicVerifier(BaseModel):
+    security_server_url: HttpUrl
+    query_id: str = StringNoneEmptySpace
+    x_road_instance: str = StringNoneEmptySpace
+    member_class: str = StringNoneEmptySpace
+    member_code: str = StringNoneEmptySpace
+    subsystem_code: str = StringNoneEmptySpace
+    asice_type: AsiceType = AsiceType.REQUEST
 
 
 class RestfulApi:
@@ -123,9 +135,18 @@ class RestfulApi:
             allow_headers=['*']
         )
         router = APIRouter()
-        router.get(
-            '/', name='verifier', response_model=Union[Asice, dict]
-        )(asicverifier)
+
+        @router.post('/')
+        async def verifier(
+            data: AsicVerifier, conf_refresh: bool = None
+        ) -> Asice:
+            return asicverifier(
+                **{
+                    key: value if key == 'asice_type' else f'{value}'
+                    for key, value in data
+                },
+                conf_refresh=conf_refresh
+            )
 
         api.include_router(router, prefix=RESTFUL_API_PATH)
         return api

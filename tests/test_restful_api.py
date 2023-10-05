@@ -33,9 +33,10 @@ class TestRestfulApi(unittest.TestCase):
         client: TestClient = TestClient(RestfulApi.app())
         self.assertEqual(client.get('/docs').status_code, 200)
         self.assertDictEqual(
-            client.get(
+            client.post(
                 '/',
-                params={
+                params={'conf_refresh': True},
+                json={
                     'security_server_url': URL,
                     'query_id': QUERY_ID,
                     'x_road_instance': X_ROAD_INSTANCE,
