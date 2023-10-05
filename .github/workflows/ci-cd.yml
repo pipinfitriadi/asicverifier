@@ -71,6 +71,12 @@ jobs:
           echo PATH=$PATH >> $GITHUB_ENV
       - name: Install package
         run: pip install '.[restful-api]'
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - run: java --help
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display test coverage
