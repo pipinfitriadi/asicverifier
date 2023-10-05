@@ -3,6 +3,7 @@
 # This module is part of AsicVerifier and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+from dateutil.parser import parse
 from datetime import datetime
 import json
 import unittest
@@ -34,11 +35,11 @@ ASICE_TYPE: str = AsiceType.RESPONSE
 DIRS: str = 'tests/data/'
 
 
-def datetime_parser(data: dict, format: str = r'%Y-%m-%dT%H:%M:%S') -> dict:
+def datetime_parser(data: dict) -> dict:
     for key, value in data.items():
         if isinstance(value, str):
             try:
-                data[key] = datetime.strptime(value, format)
+                data[key] = parse(value)
             except ValueError:
                 pass
 
