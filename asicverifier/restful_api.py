@@ -5,9 +5,9 @@
 
 from datetime import datetime
 from os import getenv
-from typing import Any, List
+from typing import List
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import (
     BaseModel,
@@ -16,6 +16,7 @@ from pydantic import (
     HttpUrl,
     NonNegativeInt
 )
+from requests.exceptions import HTTPError
 import uvicorn
 
 from . import AsiceType, asicverifier, META_DATA, SUMMARY
@@ -95,17 +96,16 @@ class Asice(BaseModel):
     file: List[AsicFile]
 
 
-StringNoneEmptySpace: Any = Field(pattern=r'^[\w\-]+$')
+non_empty_str: str = r'^[\w\-]+$'
 
 
 class AsicVerifier(BaseModel):
-    security_server_url: HttpUrl
-    query_id: str = StringNoneEmptySpace
-    x_road_instance: str = StringNoneEmptySpace
-    member_class: str = StringNoneEmptySpace
-    member_code: str = StringNoneEmptySpace
-    subsystem_code: str = StringNoneEmptySpace
-    asice_type: AsiceType = AsiceType.REQUEST
+    security_server_url: HttpUrl = Field(alias='securityServerUrl')
+    query_id: str = Field(alias='queryId', pattern=non_empty_str)
+    x_road_instance: str = Field(alias='xRoadInstance', pattern=non_empty_str)
+    member_class: str = Field(alias='memberClass', pattern=non_empty_str)
+    member_code: str = Field(alias='memberCode', pattern=non_empty_str)
+    subsystem_code: str = Field(alias='subsystemCode', pattern=non_empty_str)
 
 
 class RestfulApi:
@@ -119,6 +119,16 @@ class RestfulApi:
         api: FastAPI = FastAPI(
             title=SUMMARY,
             version=META_DATA['Version'],
+            contact=dict(
+                name=META_DATA['Author'],
+                url=META_DATA['Home-page'],
+                email=META_DATA['Author-email']
+            ),
+            license_info=dict(
+                name=META_DATA['License'],
+                identifier=META_DATA['License'],
+                url=f"{META_DATA['Home-page']}/blob/main/LICENSE"
+            ),
             docs_url=f'{RESTFUL_API_PATH}/docs',
             redoc_url=f'{RESTFUL_API_PATH}/redoc',
             openapi_url=f'{RESTFUL_API_PATH}/openapi.json'
@@ -138,15 +148,20 @@ class RestfulApi:
 
         @router.post('/')
         async def verifier(
-            data: AsicVerifier, conf_refresh: bool = None
+            data: AsicVerifier,
+            asice_type: AsiceType = Query(
+                None, alias='type', description='Default is request'
+            ),
+            conf_refresh: bool = Query(None, description='Default is false')
         ) -> Asice:
-            return asicverifier(
-                **{
-                    key: value if key == 'asice_type' else f'{value}'
-                    for key, value in data
-                },
-                conf_refresh=conf_refresh
-            )
+            try:
+                return asicverifier(
+                    **{key: f'{value}' for key, value in data},
+                    asice_type=asice_type if asice_type else AsiceType.REQUEST,
+                    conf_refresh=conf_refresh
+                )
+            except HTTPError as error:
+                raise HTTPException(error.response.status_code)
 
         api.include_router(router, prefix=RESTFUL_API_PATH)
         return api
