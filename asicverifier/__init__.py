@@ -161,7 +161,15 @@ def asicverifier(
             with ZipFile(BytesIO(response.content)) as zip_file:
                 zip_file.extractall(CONF_PATH)
         except requests.exceptions.HTTPError:
-            logging.error(f"verificationconf: '{response.text}'")
+            logging.error(
+                '\n'.join([
+                    f'{key}: "{value}"'
+                    for key, value in dict(
+                        security_server_url=security_server_url,
+                        verificationconf=response.text
+                    ).items()
+                ])
+            )
             raise
 
     # Asice File
@@ -203,7 +211,20 @@ def asicverifier(
             proc_yes.kill()
             logging.debug(message)
     except requests.exceptions.HTTPError:
-        logging.error(f"Asice: '{response.text}'")
+        logging.error(
+            '\n'.join([
+                f'{key}: "{value}"'
+                for key, value in dict(
+                    security_server_url=security_server_url,
+                    query_id=query_id,
+                    x_road_instance=x_road_instance,
+                    member_class=member_class,
+                    member_code=member_code,
+                    subsystem_code=subsystem_code,
+                    asice=response.text
+                ).items()
+            ])
+        )
         raise
 
     return extract_asice(message)
