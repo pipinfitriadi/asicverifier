@@ -35,15 +35,14 @@ class TestRestfulApi(unittest.TestCase):
         self.assertDictEqual(
             client.post(
                 '/',
-                params={'conf_refresh': True},
+                params={'conf_refresh': True, 'type': ASICE_TYPE.value},
                 json={
-                    'security_server_url': URL,
-                    'query_id': QUERY_ID,
-                    'x_road_instance': X_ROAD_INSTANCE,
-                    'member_class': MEMBER_CLASS,
-                    'member_code': MEMBER_CODE,
-                    'subsystem_code': SUBSYSTEM_CODE,
-                    'asice_type': ASICE_TYPE.value
+                    'securityServerUrl': URL,
+                    'queryId': QUERY_ID,
+                    'xRoadInstance': X_ROAD_INSTANCE,
+                    'memberClass': MEMBER_CLASS,
+                    'memberCode': MEMBER_CODE,
+                    'subsystemCode': SUBSYSTEM_CODE
                 }
             ).json(object_hook=datetime_parser),
             ASIC_VERIFIER_RESPONSE

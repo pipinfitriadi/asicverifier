@@ -5,7 +5,7 @@
 
 from datetime import datetime
 from os import getenv
-from typing import Any, List
+from typing import List
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -95,17 +95,16 @@ class Asice(BaseModel):
     file: List[AsicFile]
 
 
-StringNoneEmptySpace: Any = Field(pattern=r'^[\w\-]+$')
+non_empty_str: str = r'^[\w\-]+$'
 
 
 class AsicVerifier(BaseModel):
-    security_server_url: HttpUrl
-    query_id: str = StringNoneEmptySpace
-    x_road_instance: str = StringNoneEmptySpace
-    member_class: str = StringNoneEmptySpace
-    member_code: str = StringNoneEmptySpace
-    subsystem_code: str = StringNoneEmptySpace
-    asice_type: AsiceType = AsiceType.REQUEST
+    security_server_url: HttpUrl = Field(alias='securityServerUrl')
+    query_id: str = Field(alias='queryId', pattern=non_empty_str)
+    x_road_instance: str = Field(alias='xRoadInstance', pattern=non_empty_str)
+    member_class: str = Field(alias='memberClass', pattern=non_empty_str)
+    member_code: str = Field(alias='memberCode', pattern=non_empty_str)
+    subsystem_code: str = Field(alias='subsystemCode', pattern=non_empty_str)
 
 
 class RestfulApi:
@@ -138,13 +137,13 @@ class RestfulApi:
 
         @router.post('/')
         async def verifier(
-            data: AsicVerifier, conf_refresh: bool = None
+            data: AsicVerifier,
+            type: AsiceType = None,
+            conf_refresh: bool = None
         ) -> Asice:
             return asicverifier(
-                **{
-                    key: value if key == 'asice_type' else f'{value}'
-                    for key, value in data
-                },
+                **{key: f'{value}' for key, value in data},
+                asice_type=type if type else AsiceType.REQUEST,
                 conf_refresh=conf_refresh
             )
 
