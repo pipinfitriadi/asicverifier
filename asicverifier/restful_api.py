@@ -7,7 +7,7 @@ from datetime import datetime
 from os import getenv
 from typing import List
 
-from fastapi import APIRouter, FastAPI, Query
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import (
     BaseModel,
@@ -16,6 +16,7 @@ from pydantic import (
     HttpUrl,
     NonNegativeInt
 )
+from requests.exceptions import HTTPError
 import uvicorn
 
 from . import AsiceType, asicverifier, META_DATA, SUMMARY
@@ -153,11 +154,14 @@ class RestfulApi:
             ),
             conf_refresh: bool = Query(None, description='Default is false')
         ) -> Asice:
-            return asicverifier(
-                **{key: f'{value}' for key, value in data},
-                asice_type=asice_type if asice_type else AsiceType.REQUEST,
-                conf_refresh=conf_refresh
-            )
+            try:
+                return asicverifier(
+                    **{key: f'{value}' for key, value in data},
+                    asice_type=asice_type if asice_type else AsiceType.REQUEST,
+                    conf_refresh=conf_refresh
+                )
+            except HTTPError as error:
+                raise HTTPException(error.response.status_code)
 
         api.include_router(router, prefix=RESTFUL_API_PATH)
         return api

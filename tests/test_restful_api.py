@@ -47,3 +47,19 @@ class TestRestfulApi(unittest.TestCase):
             ).json(object_hook=datetime_parser),
             ASIC_VERIFIER_RESPONSE
         )
+
+        with self.assertRaises(AttributeError):
+            self.assertEqual(
+                client.post(
+                    '/',
+                    params={'conf_refresh': True, 'type': ASICE_TYPE.value},
+                    json={
+                        'securityServerUrl': URL.replace('https', 'http'),
+                        'queryId': QUERY_ID,
+                        'xRoadInstance': X_ROAD_INSTANCE,
+                        'memberClass': MEMBER_CLASS,
+                        'memberCode': MEMBER_CODE,
+                        'subsystemCode': SUBSYSTEM_CODE
+                    }
+                ).status_code
+            )
