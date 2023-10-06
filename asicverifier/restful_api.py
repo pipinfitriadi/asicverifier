@@ -7,7 +7,7 @@ from datetime import datetime
 from os import getenv
 from typing import List
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import (
     BaseModel,
@@ -118,6 +118,16 @@ class RestfulApi:
         api: FastAPI = FastAPI(
             title=SUMMARY,
             version=META_DATA['Version'],
+            contact=dict(
+                name=META_DATA['Author'],
+                url=META_DATA['Home-page'],
+                email=META_DATA['Author-email']
+            ),
+            license_info=dict(
+                name=META_DATA['License'],
+                identifier=META_DATA['License'],
+                url=f"{META_DATA['Home-page']}/blob/main/LICENSE"
+            ),
             docs_url=f'{RESTFUL_API_PATH}/docs',
             redoc_url=f'{RESTFUL_API_PATH}/redoc',
             openapi_url=f'{RESTFUL_API_PATH}/openapi.json'
@@ -138,12 +148,14 @@ class RestfulApi:
         @router.post('/')
         async def verifier(
             data: AsicVerifier,
-            type: AsiceType = None,
-            conf_refresh: bool = None
+            asice_type: AsiceType = Query(
+                None, alias='type', description='Default is request'
+            ),
+            conf_refresh: bool = Query(None, description='Default is false')
         ) -> Asice:
             return asicverifier(
                 **{key: f'{value}' for key, value in data},
-                asice_type=type if type else AsiceType.REQUEST,
+                asice_type=asice_type if asice_type else AsiceType.REQUEST,
                 conf_refresh=conf_refresh
             )
 
