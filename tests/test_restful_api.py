@@ -31,7 +31,7 @@ class TestRestfulApi(unittest.TestCase):
     @mock.patch('asicverifier.requests.get', side_effect=mocked_requests_get)
     def test_app(self, _):
         client: TestClient = TestClient(RestfulApi.app())
-        self.assertEqual(client.get('/docs').status_code, 200)
+        self.assertEqual(client.get('/').status_code, 200)
         self.assertDictEqual(
             client.post(
                 '/',

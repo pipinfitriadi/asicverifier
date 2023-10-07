@@ -129,7 +129,7 @@ class RestfulApi:
                 identifier=META_DATA['License'],
                 url=f"{META_DATA['Home-page']}/blob/main/LICENSE"
             ),
-            docs_url=f'{RESTFUL_API_PATH}/docs',
+            docs_url=f'{RESTFUL_API_PATH}/',
             redoc_url=f'{RESTFUL_API_PATH}/redoc',
             openapi_url=f'{RESTFUL_API_PATH}/openapi.json'
         )

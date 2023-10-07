@@ -35,7 +35,7 @@ Asic Verifier for X-Road
     docker run -d --rm --platform linux/amd64 -p '80:80' --name asicverifier pipinfitriadi/asicverifier
     ```
 
-    > RESTful API's docs should be available at [http://0.0.0.0/docs](http://0.0.0.0/docs)
+    > RESTful API's docs should be available at [http://0.0.0.0/](http://0.0.0.0/)
 
 - Shut down:
 
@@ -70,7 +70,7 @@ asicverifier:
     docker compose up -d
     ```
 
-    > RESTful API's docs should be available at [http://0.0.0.0/docs](http://0.0.0.0/docs)
+    > RESTful API's docs should be available at [http://0.0.0.0/](http://0.0.0.0/)
 
 - Shut down:
 

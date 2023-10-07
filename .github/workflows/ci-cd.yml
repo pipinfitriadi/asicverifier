@@ -43,7 +43,7 @@ jobs:
         if: steps.cache-java-jar.outputs.cache-hit != 'true'
         run: docker run --rm --platform linux/amd64 -v $PWD/app/:/app/ --entrypoint cp niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar app/asicverifier.jar
   venv:
-    name: Virtual environment
+    name: Virtual Environment
     if:
       github.ref_type == 'tag' ||
       github.event_name == 'pull_request' ||
