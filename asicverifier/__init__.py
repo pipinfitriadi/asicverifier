@@ -221,6 +221,7 @@ def asicverifier(
                     member_class=member_class,
                     member_code=member_code,
                     subsystem_code=subsystem_code,
+                    asice_type=asice_type,
                     asice=response.text
                 ).items()
             ])
