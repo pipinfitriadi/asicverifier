@@ -7,8 +7,8 @@ from dateutil.parser import parse
 from dateutil.tz import tzutc
 from datetime import datetime
 import json
-import unittest
 from typing import Any
+import unittest
 from unittest import mock
 
 from click.testing import Result
