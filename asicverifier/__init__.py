@@ -4,8 +4,6 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-from dateutil import tz
-from dateutil.parser import parse
 from datetime import datetime
 from enum import Enum
 from io import BytesIO
@@ -18,6 +16,8 @@ from tempfile import NamedTemporaryFile
 from urllib.parse import urlencode, urljoin, urlparse
 from zipfile import ZipFile
 
+from dateutil import tz
+from dateutil.parser import parse
 from dotenv import load_dotenv
 from importlib_metadata import PackageMetadata, metadata
 import requests

@@ -4,8 +4,6 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-from dateutil.parser import parse
-from dateutil.tz import tzutc
 from datetime import datetime
 import json
 from typing import Any
@@ -13,6 +11,8 @@ import unittest
 from unittest import mock
 
 from click.testing import Result
+from dateutil.parser import parse
+from dateutil.tz import tzutc
 import requests
 from typer.testing import CliRunner
 
