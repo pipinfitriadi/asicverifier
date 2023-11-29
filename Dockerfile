@@ -1,7 +1,7 @@
-# This file is part of AsicVerifier and is released under
-# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Licensed under the AGPL-3.0-only License. See LICENSE in the project root for license information.
 
-FROM python:3.7-alpine AS venv
+FROM python:3.8-alpine AS venv
 LABEL maintainer=pipinfitriadi@gmail.com
 ADD https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h skipcache
 RUN pip install \
@@ -15,7 +15,7 @@ RUN pip install \
         --target=/opt/venv/ \
         AsicVerifier[restful-api]
 
-FROM python:3.7-alpine
+FROM python:3.8-alpine
 LABEL maintainer=pipinfitriadi@gmail.com
 COPY --from=niis/xroad-security-server-sidecar:7.0.4 /usr/share/xroad/jlib/asicverifier.jar /lib/
 ENV JAVA_HOME /opt/java/openjdk
