@@ -1,5 +1,5 @@
-# This file is part of AsicVerifier and is released under
-# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Licensed under the AGPL-3.0-only License. See LICENSE in the project root for license information.
 
 [build-system]
 requires = ['setuptools>=61.0', 'setuptools-git-versioning<2']
@@ -9,7 +9,7 @@ build-backend = 'setuptools.build_meta'
 name = 'AsicVerifier'
 description = 'Asic Verifier for X-Road'
 readme = 'README.md'
-requires-python = '>=3.7'
+requires-python = '>=3.8'
 license = {text = 'AGPL-3.0-only'}
 keywords = ['X-Road', 'security server']
 authors = [{name = 'Pipin Fitriadi'}, {email = 'pipinfitriadi@gmail.com'}]
@@ -17,7 +17,7 @@ maintainers = [{name = 'Pipin Fitriadi'}, {email = 'pipinfitriadi@gmail.com'}]
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Programming Language :: Java',
-    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: GNU Affero General Public License v3',
     'Operating System :: OS Independent',
     'Framework :: FastAPI',

@@ -22,7 +22,6 @@
                 "build",
                 "'coverage[toml]'",
                 "httpx",
-                "'importlib_metadata<5'",
                 "flake8"
             ]
         },

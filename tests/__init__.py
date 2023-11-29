@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-# This module is part of AsicVerifier and is released under
-# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Licensed under the AGPL-3.0-only License. See LICENSE in the project root
+# for license information.
 
-from dateutil.parser import parse
-from dateutil.tz import tzutc
 from datetime import datetime
 import json
-import unittest
 from typing import Any
+import unittest
 from unittest import mock
 
 from click.testing import Result
+from dateutil.parser import parse
+from dateutil.tz import tzutc
 import requests
 from typer.testing import CliRunner
 
