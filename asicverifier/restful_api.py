@@ -45,7 +45,7 @@ class AsicSign(BaseModel):
 
 
 class AsicSignerCertificateSubject(AsicOcsp):
-    C: str
+    C: str = None
 
 
 class AsicSignerCertificate(AsicSign):
@@ -63,14 +63,14 @@ class AsicOcspResponse(BaseModel):
 
 
 class AsicTimeStampSignByIssuer(AsicSignerCertificateSubject, BaseModel):
-    ST: str
-    L: str
-    EMAILADDRESS: EmailStr
-    OU: str
+    ST: str = None
+    L: str = None
+    EMAILADDRESS: EmailStr = None
+    OU: str = None
 
 
 class AsicTimeStampSignBySubject(AsicTimeStampSignByIssuer):
-    oid_2_5_4_13: str = Field(alias='OID.2.5.4.13')
+    oid_2_5_4_13: str = Field(None, alias='OID.2.5.4.13')
 
 
 class AsicTimeStampSignBy(AsicSign):
