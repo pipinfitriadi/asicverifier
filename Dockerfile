@@ -6,13 +6,13 @@ FROM python:3.8-alpine AS venv
 LABEL maintainer=pipinfitriadi@gmail.com
 ADD https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h skipcache
 RUN pip install \
-        --upgrade \
         --root-user-action=ignore \
+        --upgrade \
         pip && \
     pip install \
-        --no-cache-dir \
         --upgrade \
         --root-user-action=ignore \
+        --no-cache-dir \
         --target=/opt/venv/ \
         AsicVerifier[restful-api]
 
