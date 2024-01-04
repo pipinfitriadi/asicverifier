@@ -81,18 +81,24 @@
             "args": ["-m", "twine", "upload", "--config-file", ".pypirc", "--skip-existing", "dist/*"]
         },
         {
-            "label": "Docker: build",
+            "label": "Docker: Pull",
             "type": "shell",
-            "command": "docker compose pull asicverifier && docker compose build && docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
+            "command": "docker compose pull asicverifier || true"
         },
         {
-            "label": "Docker: push",
+            "label": "Docker: Build",
+            "dependsOn": "Docker: Pull",
+            "type": "shell",
+            "command": "docker compose build && docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
+        },
+        {
+            "label": "Docker: Push",
             "dependsOn": "Docker: build",
             "type": "shell",
             "command": "docker compose push asicverifier"
         },
         {
-            "label": "Docker: run",
+            "label": "Docker: Run",
             "type": "shell",
             "command": "docker compose up && docker compose rm -fsv"
         }
