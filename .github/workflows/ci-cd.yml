@@ -53,6 +53,10 @@ jobs:
       startsWith(github.ref, 'refs/heads/hotfix/')
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Cache venv
         id: cache-python-venv
         uses: actions/cache@v3
@@ -70,7 +74,9 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install --upgrade pip
-          pip install build 'coverage[toml]' httpx
+          pip install toml build 'coverage[toml]' httpx
+          python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join([*c["project"].get("dependencies", []), *[row for optional_dependency in c["project"].get("optional-dependencies", {}).values() for row in optional_dependency]]))' > /tmp/requirements.txt
+          pip install -r /tmp/requirements.txt
   unittest:
     name: Unit Test
     needs: [jar, venv]
