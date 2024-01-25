@@ -112,7 +112,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Test coverage must be 100% passed!
-        run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
+        run: if [ $(printf '%.0f' $(python -m coverage report | awk '$1 == "TOTAL" {print $NF+0}')) = 100 ]; then exit; else exit 1; fi
   pypi:
     name: PyPI
     needs: [lint, unittest]
