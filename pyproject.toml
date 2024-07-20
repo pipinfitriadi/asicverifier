@@ -26,7 +26,7 @@ classifiers = [
     'Topic :: Text Processing',
     'Topic :: Utilities'
 ]
-dependencies = ['python-dotenv', 'typer[all]', 'requests', 'python-dateutil']
+dependencies = ['python-dotenv', 'typer[all]', 'requests', 'python-dateutil', 'importlib-metadata']
 scripts = { asicverifier = 'asicverifier.__main__:cli' }
 dynamic = ['version']
 
